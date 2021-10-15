@@ -1,0 +1,28 @@
+{
+  "iisSettings": {
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:64333",
+      "sslPort": 0
+    },
+    "windowsAuthentication": false
+  },
+  "profiles": {
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "launchBrowser": true
+    },
+    "Supermercado": {
+      "applicationUrl": "http://localhost:5000",
+      "commandName": "Project",
+      "dotnetRunMessages": "true",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "launchBrowser": true
+    }
+  }
+}

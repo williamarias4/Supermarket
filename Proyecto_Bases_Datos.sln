@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31702.278
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Proyecto_Bases_Datos", "Proyecto_Bases_Datos\Proyecto_Bases_Datos.csproj", "{1EC61408-CC66-4828-878F-447213207B60}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Supermercado", "Supermercado\Supermercado.csproj", "{B7FAFE47-28B8-4F9C-8880-BFA1BD467C38}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{1EC61408-CC66-4828-878F-447213207B60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1EC61408-CC66-4828-878F-447213207B60}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1EC61408-CC66-4828-878F-447213207B60}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1EC61408-CC66-4828-878F-447213207B60}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7FAFE47-28B8-4F9C-8880-BFA1BD467C38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7FAFE47-28B8-4F9C-8880-BFA1BD467C38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7FAFE47-28B8-4F9C-8880-BFA1BD467C38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7FAFE47-28B8-4F9C-8880-BFA1BD467C38}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
