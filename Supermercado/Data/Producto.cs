@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Supermercado.Pages
+namespace Supermercado.Data
 {
     public class Producto
     {
-        public Producto(int _id, int _idArea, int _ean, string _descripcion, int _precio, int _cantidad)
+        public Producto(int _id, int _idArea, long _ean, string _descripcion, int _precio, int _cantidad)
         {
             this.id = _id;
             this.idArea = _idArea;
@@ -19,7 +19,7 @@ namespace Supermercado.Pages
         public Producto() { }
         public int id { get; set; }
         public int idArea { get; set; }
-        public int ean { get; set; }
+        public long ean { get; set; }
         public string descripcion { get; set; }
         public float precio { get; set; }
         public int cantidad { get; set; }
