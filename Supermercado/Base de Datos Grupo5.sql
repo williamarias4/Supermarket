@@ -498,6 +498,26 @@ begin
   commit;
 end eliminar_usuario_sp;
 /
+create or replace NONEDITIONABLE procedure seleccionar_productos
+(
+result OUT SYS_REFCURSOR
+)
+as
+begin
+    OPEN result FOR
+	select p.pk_idproducto
+		, p.ean
+		, p.descripcion
+		, p.precio
+        , p.cantidad
+        , a.pk_idarea
+        , a.descripcion as area
+        , f.plu
+        , f.peso
+    from producto p
+    inner join area a on p.fk_idarea = a.pk_idarea
+    left join productofresco f on p.pk_idproducto = f.fk_idproducto;
+end seleccionar_productos;
 
 
 

@@ -30,5 +30,32 @@ namespace Supermercado.DAO
             }
             
         }
+
+        public DataSet ListaClientes()
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                OracleConnection connection = GetConnection();
+                connection.Open();
+                if (connection.State == System.Data.ConnectionState.Open)
+                {
+                    OracleCommand cmd = new OracleCommand();
+                    cmd.Connection = connection;
+                    cmd.CommandText = "seleccionar_productos";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add("result", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+                    cmd.ExecuteNonQuery();
+                    connection.Close();
+                    OracleDataAdapter da = new OracleDataAdapter(cmd);
+                    da.Fill(ds);
+                }
+                return ds;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
     }
 }
