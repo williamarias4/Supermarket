@@ -1,5 +1,42 @@
 ﻿@page "/producto"
+
+@using System.Web;
+
 <h3>Productos</h3>
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">ID Area</th>
+                        <th scope="col">EAN</th>
+                        <th scope="col">Descripcion</th>
+                        <th scope="col">Precio</th>
+                        <th scope="col">Cantidad</th>
+                        <th scope="col">Accion</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">1</th>
+                        <td>Bootstrap 4 CDN and Starter Template</td>
+                        <td>Cristina</td>
+                        <td>2.846</td>
+                        <td>2.846</td>
+                        <td>
+                            <button type="button" class="btn btn-success">Modificar</button>
+                            <button type="button" class="btn btn-danger">Eliminar</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <NavLink href="formularioProducto">
+        <button class="btn btn-primary">Crear producto</button>
+    </NavLink>
+</div>
 
 @code {
 

@@ -1,0 +1,40 @@
+﻿@page "/formularioProducto"
+
+<h3>Formulario de creacion de productos</h3>
+<form class="form-group col-md-12">
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="inputArea">Area</label>
+            <select id="inputArea" class="form-control">
+                <option selected>Choose...</option>
+                <option>...</option>
+            </select>
+        </div>
+        <div class="form-group col-md-6">
+            <label for="inputEAN">EAN</label>
+            <input type="number" class="form-control" id="inputEAN" placeholder="987654321">
+        </div>
+    </div>
+    <div class="form-row">
+        <label for="inputDescripcion">Descripcion</label>
+        <input type="text" class="form-control" id="inputDescripcion" placeholder="Arroz Tio Pelon">
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="inputPrecio">Precio</label>
+            <input type="number" step="0.01" class="form-control" id="inputPrecio" placeholder="1000">
+        </div>
+        <div class="form-group col-md-6">
+            <label for="inputCantidad">Cantidad</label>
+            <input type="number" class="form-control" id="inputCantidad" placeholder="50">
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Crear</button>
+</form>
+
+@code {
+    private void capturarInput()
+    {
+        
+    }
+}
