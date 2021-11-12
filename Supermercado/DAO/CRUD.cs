@@ -8,27 +8,28 @@ namespace Supermercado.DAO
 {
     public class CRUD : ConexionBD
     {
-        public void insertarProducto(int _idArea, long _ean, string _descripcion, int _precio, int _cantidad)
+        public void insertarProducto(Producto p)
         {
-            try
-            {
-                OracleConnection connection = GetConnection();
-                string query = string.Format("INSERT INTO producto (pk_idproducto, fk_idarea, ean, descripcion, precio, cantidad) VALUES (producto_sq.nextval,'{0}','{1}','{2}','{3}','{4}');", _idArea, _ean, _descripcion, _precio, _cantidad);
-                query = "INSERT INTO super.producto (pk_idproducto, fk_idarea, ean, descripcion, precio, cantidad) VALUES (18, 1, 3693693693693,'aceite',1800, 30)";
-                OracleCommand accion = new OracleCommand(query, connection);
-                accion.CommandTimeout = 60;
+            try {
+                OracleConnection connectionString = GetConnection();
+                string sql = "insert into super.producto(pk_idproducto, fk_idarea, ean, descripcion, precio, cantidad) values (:id, :idArea, :ean, :descripcion, :precio, :cantidad)";
+                OracleConnection connection = connectionString;
                 connection.Open();
-                //Ejecuta el query
-                accion.ExecuteNonQuery();
-                //Cierra conexion
+                OracleCommand cmd = connection.CreateCommand();
+                cmd.CommandType = System.Data.CommandType.Text;
+                cmd.CommandText = sql;
+                cmd.Parameters.Add("id", OracleDbType.Int32).Value = p.id;
+                cmd.Parameters.Add("idArea", OracleDbType.Int64).Value = p.idArea;
+                cmd.Parameters.Add("ean", OracleDbType.Long).Value = p.ean;
+                cmd.Parameters.Add("descripcion", OracleDbType.Varchar2).Value = p.descripcion;
+                cmd.Parameters.Add("precio", OracleDbType.BinaryFloat).Value = p.precio;
+                cmd.Parameters.Add("cantidad", OracleDbType.Int64).Value = p.cantidad;
+                cmd.ExecuteNonQuery();
                 connection.Close();
+                cmd.Dispose();
+                connection.Dispose();
+            } catch (Exception ex) {
             }
-            catch (Exception ex)
-            {
-
-                
-            }
-            
         }
 
         public DataSet ListaClientes()

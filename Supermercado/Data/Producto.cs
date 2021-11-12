@@ -7,7 +7,7 @@ namespace Supermercado.Data
 {
     public class Producto
     {
-        public Producto(int _id, int _idArea, long _ean, string _descripcion, int _precio, int _cantidad)
+        public Producto(int _id, int _idArea, long _ean, string _descripcion, float _precio, int _cantidad)
         {
             this.id = _id;
             this.idArea = _idArea;

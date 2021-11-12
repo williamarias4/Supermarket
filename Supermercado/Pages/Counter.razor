@@ -1,11 +1,10 @@
 ﻿@page "/counter"
-@using Supermercado.DAO
+
 <h1>Counter</h1>
 
 <p>Current count: @currentCount</p>
 
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
-<button class="btn btn-primary" @onclick="Insertar">Insertar</button>
 
 @code {
     private int currentCount = 0;
@@ -13,12 +12,5 @@
     private void IncrementCount()
     {
         currentCount++;
-    }
-
-    private void Insertar()
-    {
-        CRUD cRUD = new CRUD();
-        //cRUD.insertarProducto(1, 9896985696578, "Macarrones", 500, 200);
-        cRUD.ListaClientes();
     }
 }

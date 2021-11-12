@@ -1,7 +1,10 @@
 ﻿@page "/formularioProducto"
 
-<h3>Formulario de creacion de productos</h3>
+@using Supermercado.DAO
+@using Supermercado.Data
+
 <form class="form-group col-md-12">
+    <h3>Formulario de creacion de productos</h3>
     <div class="form-row">
         <div class="form-group col-md-6">
             <label for="inputArea">Area</label>
@@ -12,29 +15,36 @@
         </div>
         <div class="form-group col-md-6">
             <label for="inputEAN">EAN</label>
-            <input type="number" class="form-control" id="inputEAN" placeholder="987654321">
+            <input @bind="ean" type="number" class="form-control" id="inputEAN" placeholder="987654321">
         </div>
     </div>
     <div class="form-row">
         <label for="inputDescripcion">Descripcion</label>
-        <input type="text" class="form-control" id="inputDescripcion" placeholder="Arroz Tio Pelon">
+        <input @bind="descripcion" type="text" class="form-control" id="inputDescripcion" placeholder="Arroz Tio Pelon">
     </div>
     <div class="form-row">
         <div class="form-group col-md-6">
             <label for="inputPrecio">Precio</label>
-            <input type="number" step="0.01" class="form-control" id="inputPrecio" placeholder="1000">
+            <input @bind="precio" type="number" step="0.01" class="form-control" id="inputPrecio" placeholder="1000">
         </div>
         <div class="form-group col-md-6">
             <label for="inputCantidad">Cantidad</label>
-            <input type="number" class="form-control" id="inputCantidad" placeholder="50">
+            <input @bind="cantidad" type="number" class="form-control" id="inputCantidad" placeholder="50">
         </div>
     </div>
-    <button type="submit" class="btn btn-primary">Crear</button>
+    <button @onclick="insertarProducto" type="submit" class="btn btn-primary">Crear</button>
 </form>
 
 @code {
-    private void capturarInput()
+    private long ean;
+    private string descripcion;
+    private float precio;
+    private int cantidad;
+
+    private void insertarProducto()
     {
-        
+        Producto p = new Producto(123, 1, ean, descripcion, precio, cantidad);
+        CRUD crud = new CRUD();
+        crud.insertarProducto(p);
     }
 }
