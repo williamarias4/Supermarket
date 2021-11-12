@@ -1,7 +1,7 @@
 ﻿@page "/formularioProducto"
 
-@using Supermercado.DAO
-@using Supermercado.Data
+@using Supermercado.DAO;
+@using Supermercado.Data;
 
 <form class="form-group col-md-12">
     <h3>Formulario de creacion de productos</h3>
@@ -43,7 +43,7 @@
 
     private void insertarProducto()
     {
-        Producto p = new Producto(123, 1, ean, descripcion, precio, cantidad);
+        Producto p = new Producto(124, 1, ean, descripcion, precio, cantidad);
         CRUD crud = new CRUD();
         crud.insertarProducto(p);
     }

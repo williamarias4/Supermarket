@@ -1,6 +1,7 @@
-﻿@page "/producto"
+﻿@page "/productos"
 
-@using System.Web;
+@using Supermercado.DAO;
+@using Supermercado.Data;
 
 <h3>Productos</h3>
 <div class="container">
@@ -18,17 +19,20 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>Bootstrap 4 CDN and Starter Template</td>
-                        <td>Cristina</td>
-                        <td>2.846</td>
-                        <td>2.846</td>
-                        <td>
-                            <button type="button" class="btn btn-success">Modificar</button>
-                            <button type="button" class="btn btn-danger">Eliminar</button>
-                        </td>
-                    </tr>
+                    @foreach (var producto in listarProductos())
+                    {
+                        <tr>
+                            <td>@producto.id</td>
+                            <td>@producto.ean</td>
+                            <td>@producto.descripcion</td>
+                            <td>@producto.precio</td>
+                            <td>@producto.cantidad</td>
+                            <td>
+                                <button type="button" class="btn btn-success">Modificar</button>
+                                <button type="button" class="btn btn-danger">Eliminar</button>
+                            </td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>
@@ -39,5 +43,11 @@
 </div>
 
 @code {
-
+    private List<Producto> listarProductos()
+    {
+        List<Producto> p = new List<Producto>();
+        CRUD crud = new CRUD();
+        p = crud.listarProductos();
+        return p;
+    }
 }

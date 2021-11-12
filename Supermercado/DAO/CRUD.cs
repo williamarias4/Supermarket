@@ -19,11 +19,11 @@ namespace Supermercado.DAO
                 cmd.CommandType = System.Data.CommandType.Text;
                 cmd.CommandText = sql;
                 cmd.Parameters.Add("id", OracleDbType.Int32).Value = p.id;
-                cmd.Parameters.Add("idArea", OracleDbType.Int64).Value = p.idArea;
+                cmd.Parameters.Add("idArea", OracleDbType.Int32).Value = p.idArea;
                 cmd.Parameters.Add("ean", OracleDbType.Long).Value = p.ean;
                 cmd.Parameters.Add("descripcion", OracleDbType.Varchar2).Value = p.descripcion;
                 cmd.Parameters.Add("precio", OracleDbType.BinaryFloat).Value = p.precio;
-                cmd.Parameters.Add("cantidad", OracleDbType.Int64).Value = p.cantidad;
+                cmd.Parameters.Add("cantidad", OracleDbType.Int32).Value = p.cantidad;
                 cmd.ExecuteNonQuery();
                 connection.Close();
                 cmd.Dispose();
@@ -31,31 +31,40 @@ namespace Supermercado.DAO
             } catch (Exception ex) {
             }
         }
-
-        public DataSet ListaClientes()
+        public List<Producto> listarProductos()
         {
-            DataSet ds = new DataSet();
             try
             {
-                OracleConnection connection = GetConnection();
+                List<Producto> productos = new List<Producto>();
+                OracleConnection connectionString = GetConnection();
+                string sql = "select producto.pk_idproducto, producto.fk_idarea, producto.ean, producto.descripcion, producto.precio, producto.cantidad  from SUPER.producto";
+                OracleConnection connection = connectionString;
                 connection.Open();
-                if (connection.State == System.Data.ConnectionState.Open)
+                OracleCommand cmd = connection.CreateCommand();
+                cmd.CommandText = sql;
+                OracleDataReader dr = cmd.ExecuteReader();
+                if(dr.HasRows)
                 {
-                    OracleCommand cmd = new OracleCommand();
-                    cmd.Connection = connection;
-                    cmd.CommandText = "seleccionar_productos";
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.Add("result", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
-                    cmd.ExecuteNonQuery();
-                    connection.Close();
-                    OracleDataAdapter da = new OracleDataAdapter(cmd);
-                    da.Fill(ds);
+                    while (dr.Read())
+                    {
+                        Producto p = new Producto();
+                        p.id = dr.GetInt32(0);
+                        p.idArea = dr.GetInt32(1);
+                        p.ean = dr.GetInt64(2);
+                        p.descripcion = dr.GetString(3);
+                        p.precio = dr.GetFloat(4);
+                        p.cantidad = dr.GetInt32(5);
+                        productos.Add(p);
+                    }
                 }
-                return ds;
+                connection.Close();
+                cmd.Dispose();
+                connection.Dispose();
+                return productos;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                throw e;
+                return null;
             }
         }
     }
