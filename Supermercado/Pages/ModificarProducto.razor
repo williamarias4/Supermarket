@@ -1,0 +1,67 @@
+﻿@page "/modificarProducto/{id:int}"
+
+@using Supermercado.DAO;
+@using Supermercado.Data;
+
+<form class="form-group col-md-12">
+    <h3>Formulario de modificacion de producto</h3>
+    <p>El id del producto es @id</p>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="inputArea">Area</label>
+            <select id="inputArea" class="form-control">
+                <option selected>Choose...</option>
+                <option>...</option>
+            </select>
+        </div>
+        <div class="form-group col-md-6">
+            <label for="inputEAN">EAN</label>
+            <input @bind-value="ean" type="number" class="form-control" id="inputEAN" placeholder="987654321">
+        </div>
+    </div>
+    <div class="form-row">
+        <label for="inputDescripcion">Descripcion</label>
+        <input @bind-value="descripcion" type="text" class="form-control" id="inputDescripcion" placeholder="Arroz Tio Pelon">
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="inputPrecio">Precio</label>
+            <input @bind-value="precio" type="number" step="0.01" class="form-control" id="inputPrecio" placeholder="1000">
+        </div>
+        <div class="form-group col-md-6">
+            <label for="inputCantidad">Cantidad</label>
+            <input @bind-value="cantidad" type="number" class="form-control" id="inputCantidad" placeholder="50">
+        </div>
+    </div>
+    <button @onclick="modificarProducto" type="submit" class="btn btn-primary">Modificar</button>
+</form>
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+    private long ean;
+    private string descripcion;
+    private float precio;
+    private int cantidad;
+
+    public void cargarDatos()
+    {
+        Producto p = new Producto();
+        CRUD crud = new CRUD();
+        p = crud.productoPorId(id);
+        ean = p.ean;
+        descripcion = p.descripcion;
+        precio = p.precio;
+        cantidad = p.cantidad;
+    }
+
+    private void modificarProducto()
+    {
+
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        cargarDatos();
+    }
+}

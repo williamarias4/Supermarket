@@ -3,6 +3,8 @@
 @using Supermercado.DAO;
 @using Supermercado.Data;
 
+@inject NavigationManager NavigationManager
+
 <h3>Productos</h3>
 <div class="container">
     <div class="row">
@@ -22,13 +24,13 @@
                     @foreach (var producto in listarProductos())
                     {
                         <tr>
-                            <td>@producto.id</td>
+                            <td>@producto.idArea</td>
                             <td>@producto.ean</td>
                             <td>@producto.descripcion</td>
                             <td>@producto.precio</td>
                             <td>@producto.cantidad</td>
                             <td>
-                                <button type="button" class="btn btn-success">Modificar</button>
+                                <button type="button" class="btn btn-success" @onclick="() => enviarId(producto.id)">Modificar</button>
                                 <button type="button" class="btn btn-danger">Eliminar</button>
                             </td>
                         </tr>
@@ -49,5 +51,10 @@
         CRUD crud = new CRUD();
         p = crud.listarProductos();
         return p;
+    }
+
+    private void enviarId(int id)
+    {
+        NavigationManager.NavigateTo("modificarProducto/"+id, forceLoad: true);
     }
 }

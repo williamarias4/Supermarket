@@ -67,5 +67,42 @@ namespace Supermercado.DAO
                 return null;
             }
         }
+
+        public Producto productoPorId(int id)
+        {
+            try
+            {
+                Producto p = new Producto();
+                OracleConnection connectionString = GetConnection();
+                string sql = "select producto.fk_idarea, producto.ean, producto.descripcion, producto.precio, producto.cantidad  from SUPER.producto where producto.pk_idproducto=:id";
+                OracleConnection connection = connectionString;
+                connection.Open();
+                OracleCommand cmd = connection.CreateCommand();
+                cmd.CommandType = System.Data.CommandType.Text;
+                cmd.CommandText = sql;
+                cmd.Parameters.Add("id", OracleDbType.Int32).Value = id;
+                cmd.ExecuteNonQuery();
+                OracleDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        p.idArea = dr.GetInt32(0);
+                        p.ean = dr.GetInt64(1);
+                        p.descripcion = dr.GetString(2);
+                        p.precio = dr.GetFloat(3);
+                        p.cantidad = dr.GetInt32(4);
+                    }
+                }
+                connection.Close();
+                cmd.Dispose();
+                connection.Dispose();
+                return p;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
     }
 }
