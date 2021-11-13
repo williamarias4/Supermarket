@@ -39,6 +39,7 @@
 @code {
     [Parameter]
     public int id { get; set; }
+    public int idArea;
     private long ean;
     private string descripcion;
     private float precio;
@@ -49,6 +50,7 @@
         Producto p = new Producto();
         CRUD crud = new CRUD();
         p = crud.productoPorId(id);
+        //idArea = p.idArea;
         ean = p.ean;
         descripcion = p.descripcion;
         precio = p.precio;
@@ -57,7 +59,9 @@
 
     private void modificarProducto()
     {
-
+        Producto p = new Producto(id, 1, ean, descripcion, precio, cantidad);
+        CRUD crud = new CRUD();
+        crud.actualizarProducto(p);
     }
 
     protected override async Task OnInitializedAsync()

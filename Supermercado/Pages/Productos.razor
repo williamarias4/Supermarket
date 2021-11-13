@@ -31,7 +31,7 @@
                             <td>@producto.cantidad</td>
                             <td>
                                 <button type="button" class="btn btn-success" @onclick="() => enviarId(producto.id)">Modificar</button>
-                                <button type="button" class="btn btn-danger">Eliminar</button>
+                                <button type="button" class="btn btn-danger" @onclick="() => eliminarProducto(producto.id)">Eliminar</button>
                             </td>
                         </tr>
                     }
@@ -51,6 +51,12 @@
         CRUD crud = new CRUD();
         p = crud.listarProductos();
         return p;
+    }
+
+    private void eliminarProducto(int id)
+    {
+        CRUD crud = new CRUD();
+        crud.eliminarProducto(id);
     }
 
     private void enviarId(int id)

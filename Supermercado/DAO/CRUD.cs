@@ -12,22 +12,20 @@ namespace Supermercado.DAO
         {
             try {
                 OracleConnection connectionString = GetConnection();
-                string sql = "insert into super.producto(pk_idproducto, fk_idarea, ean, descripcion, precio, cantidad) values (:id, :idArea, :ean, :descripcion, :precio, :cantidad)";
-                OracleConnection connection = connectionString;
-                connection.Open();
-                OracleCommand cmd = connection.CreateCommand();
-                cmd.CommandType = System.Data.CommandType.Text;
-                cmd.CommandText = sql;
+                OracleCommand cmd = new OracleCommand();
+                cmd.Connection = connectionString;
+                cmd.CommandText = "insertar_producto_sp";
+                cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.Add("id", OracleDbType.Int32).Value = p.id;
                 cmd.Parameters.Add("idArea", OracleDbType.Int32).Value = p.idArea;
                 cmd.Parameters.Add("ean", OracleDbType.Long).Value = p.ean;
                 cmd.Parameters.Add("descripcion", OracleDbType.Varchar2).Value = p.descripcion;
                 cmd.Parameters.Add("precio", OracleDbType.BinaryFloat).Value = p.precio;
                 cmd.Parameters.Add("cantidad", OracleDbType.Int32).Value = p.cantidad;
+                connectionString.Open();
                 cmd.ExecuteNonQuery();
-                connection.Close();
+                connectionString.Close();
                 cmd.Dispose();
-                connection.Dispose();
             } catch (Exception ex) {
             }
         }
@@ -102,6 +100,50 @@ namespace Supermercado.DAO
             catch (Exception ex)
             {
                 return null;
+            }
+        }
+
+        public void actualizarProducto(Producto p)
+        {
+            try
+            {
+                OracleConnection connectionString = GetConnection();
+                OracleCommand cmd = new OracleCommand();
+                cmd.Connection = connectionString;
+                cmd.CommandText = "actualizar_producto_sp";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("id", OracleDbType.Int32).Value = p.id;
+                cmd.Parameters.Add("idArea", OracleDbType.Int32).Value = p.idArea;
+                cmd.Parameters.Add("ean", OracleDbType.Long).Value = p.ean;
+                cmd.Parameters.Add("descripcion", OracleDbType.Varchar2).Value = p.descripcion;
+                cmd.Parameters.Add("precio", OracleDbType.BinaryFloat).Value = p.precio;
+                cmd.Parameters.Add("cantidad", OracleDbType.Int32).Value = p.cantidad;
+                connectionString.Open();
+                cmd.ExecuteNonQuery();
+                connectionString.Close();
+                cmd.Dispose();
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+        public void eliminarProducto(int id)
+        {
+            try
+            {
+                OracleConnection connectionString = GetConnection();
+                OracleCommand cmd = new OracleCommand();
+                cmd.Connection = connectionString;
+                cmd.CommandText = "eliminar_producto_sp";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("id", OracleDbType.Int32).Value = id;
+                connectionString.Open();
+                cmd.ExecuteNonQuery();
+                connectionString.Close();
+                cmd.Dispose();
+            }
+            catch (Exception ex)
+            {
             }
         }
     }
