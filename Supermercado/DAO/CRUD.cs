@@ -8,6 +8,7 @@ namespace Supermercado.DAO
 {
     public class CRUD : ConexionBD
     {
+        public int rol;
         public void insertarProducto(Producto p)
         {
             try {
@@ -51,6 +52,80 @@ namespace Supermercado.DAO
             catch (Exception ex)
             {
             }
+        }
+
+        public List<ProductoFresco> listarProductosFrescos()
+        {
+            try
+            {
+                List<ProductoFresco> productos = new List<ProductoFresco>();
+                OracleConnection connectionString = GetConnection();
+                string sql = "select p.pk_idproducto, p.fk_idarea, p.ean, p.descripcion, p.precio, p.cantidad, f.plu, f.peso  from producto p, productofresco f where p.pk_idproducto = f.fk_idproducto";
+                OracleConnection connection = connectionString;
+                connection.Open();
+                OracleCommand cmd = connection.CreateCommand();
+                cmd.CommandText = sql;
+                OracleDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        ProductoFresco p = new ProductoFresco();
+                        p.id = dr.GetInt32(0);
+                        p.idArea = dr.GetInt32(1);
+                        p.ean = dr.GetInt64(2);
+                        p.descripcion = dr.GetString(3);
+                        p.precio = dr.GetFloat(4);
+                        p.cantidad = dr.GetInt32(5);
+                        p.PLU = dr.GetInt32(6);
+                        p.Peso = dr.GetFloat(7);
+                        productos.Add(p);
+                    }
+                }
+                connection.Close();
+                cmd.Dispose();
+                connection.Dispose();
+                return productos;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+
+
+        public Usuario validateCredentials(string username, string password)
+        {
+            Usuario user = new Usuario();
+            OracleConnection connectionString = GetConnection();
+            string sql = "select verificar_usuario_sp(nombreusuario, contrasena) from dual";
+            OracleConnection connection = connectionString;
+            connection.Open();
+            OracleCommand cmd = connection.CreateCommand();
+            cmd.CommandText = sql;
+            cmd.Parameters.Add("nombreusuario", OracleDbType.Int32).Value = username;
+            cmd.Parameters.Add("contrasena", OracleDbType.Int32).Value = user.CreateMD5(password);
+            cmd.ExecuteNonQuery();
+            OracleDataReader dr = cmd.ExecuteReader();
+            if (dr.HasRows)
+            {
+                while (dr.Read())
+                {
+                    //Rol rol = buscarRol(dr.getInt32(1));
+                    user.IdUsuario = dr.GetInt32(0);
+                    //user.Rol = rol;
+                    user.NombreUsuario= username;
+                    user.Contrasena= password;
+                    user.Nombre = dr.GetString(4);
+                    user.Apellido1 = dr.GetString(5);
+                    user.Apellido2 = dr.GetString(6);
+                }
+            }
+            connection.Close();
+            cmd.Dispose();
+            connection.Dispose();
+            return user;
         }
 
         public List<Producto> listarProductos()
@@ -170,5 +245,6 @@ namespace Supermercado.DAO
             {
             }
         }
+        
     }
 }
