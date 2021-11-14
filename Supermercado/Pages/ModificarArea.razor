@@ -1,0 +1,39 @@
+﻿@page "/modificarArea/{id:int}"
+
+@using Supermercado.DAO;
+@using Supermercado.Data;
+
+<form class="form-group col-md-12">
+    <h3>Formulario de modificacion de area</h3>
+    <div class="form-row">
+        <label for="inputDescripcion">Descripcion</label>
+        <input @bind-value="descripcion" type="text" class="form-control" id="inputDescripcion" placeholder="Tecnologia">
+    </div>
+    <button @onclick="modificarArea" type="submit" class="btn btn-primary">Modificar</button>
+</form>
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+    private string descripcion;
+
+    public void cargarDatos()
+    {
+        Area a = new Area();
+        CRUD crud = new CRUD();
+        a = crud.areaPorId(id);
+        descripcion = a.descripcion;
+    }
+
+    private void modificarArea()
+    {
+        Area a = new Area(id, descripcion);
+        CRUD crud = new CRUD();
+        crud.actualizarArea(a);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        cargarDatos();
+    }
+}

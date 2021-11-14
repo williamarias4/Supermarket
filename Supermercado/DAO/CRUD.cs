@@ -31,6 +31,27 @@ namespace Supermercado.DAO
             }
         }
 
+        public void insertarArea(Area a)
+        {
+            try
+            {
+                OracleConnection connectionString = GetConnection();
+                OracleCommand cmd = new OracleCommand();
+                cmd.Connection = connectionString;
+                cmd.CommandText = "insertar_area_sp";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("pk_idarea)", OracleDbType.Int32).Value = a.idArea;
+                cmd.Parameters.Add("descripcion", OracleDbType.Varchar2).Value = a.descripcion;
+                connectionString.Open();
+                cmd.ExecuteNonQuery();
+                connectionString.Close();
+                cmd.Dispose();
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
         public void insertarProductoFresco(ProductoFresco f)
         {
             try
@@ -202,6 +223,39 @@ namespace Supermercado.DAO
             }
         }
 
+        public Area areaPorId(int id)
+        {
+            try
+            {
+                Area a = new Area();
+                OracleConnection connectionString = GetConnection();
+                string sql = "select area.descripcion from SUPER.area where area.pk_idarea=:id";
+                OracleConnection connection = connectionString;
+                connection.Open();
+                OracleCommand cmd = connection.CreateCommand();
+                cmd.CommandType = System.Data.CommandType.Text;
+                cmd.CommandText = sql;
+                cmd.Parameters.Add("id", OracleDbType.Int32).Value = id;
+                cmd.ExecuteNonQuery();
+                OracleDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        a.descripcion = dr.GetString(0);
+                    }
+                }
+                connection.Close();
+                cmd.Dispose();
+                connection.Dispose();
+                return a;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public ProductoFresco productoFrescoPorId(int id)
         {
             try
@@ -253,6 +307,27 @@ namespace Supermercado.DAO
                 cmd.Parameters.Add("descripcion", OracleDbType.Varchar2).Value = p.descripcion;
                 cmd.Parameters.Add("precio", OracleDbType.BinaryFloat).Value = p.precio;
                 cmd.Parameters.Add("cantidad", OracleDbType.Int32).Value = p.cantidad;
+                connectionString.Open();
+                cmd.ExecuteNonQuery();
+                connectionString.Close();
+                cmd.Dispose();
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
+        public void actualizarArea(Area a)
+        {
+            try
+            {
+                OracleConnection connectionString = GetConnection();
+                OracleCommand cmd = new OracleCommand();
+                cmd.Connection = connectionString;
+                cmd.CommandText = "actualizar_area_sp";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("pk_idarea", OracleDbType.Int32).Value = a.idArea;
+                cmd.Parameters.Add("descripcion", OracleDbType.Varchar2).Value = a.descripcion;
                 connectionString.Open();
                 cmd.ExecuteNonQuery();
                 connectionString.Close();
@@ -325,6 +400,72 @@ namespace Supermercado.DAO
             {
             }
         }
-        
+
+        public List<Area> listarAreas()
+        {
+            try
+            {
+                List<Area> a = new List<Area>();
+                OracleConnection connectionString = GetConnection();
+                string sql = "select pk_idarea, descripcion from area";
+                OracleConnection connection = connectionString;
+                connection.Open();
+                OracleCommand cmd = connection.CreateCommand();
+                cmd.CommandText = sql;
+                OracleDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        Area area = new Area();
+                        area.idArea = dr.GetInt32(0);
+                        area.descripcion = dr.GetString(1);
+                        a.Add(area);
+                    }
+                }
+                connection.Close();
+                cmd.Dispose();
+                connection.Dispose();
+                return a;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public Area areaPorProducto(int idArea)
+        {
+            try
+            {
+                Area a = new Area();
+                OracleConnection connectionString = GetConnection();
+                string sql = "select pk_idarea, descripcion from area where pk_idarea = :idArea";
+                OracleConnection connection = connectionString;
+                connection.Open();
+                OracleCommand cmd = connection.CreateCommand();
+                cmd.CommandType = System.Data.CommandType.Text;
+                cmd.CommandText = sql;
+                cmd.Parameters.Add("idArea", OracleDbType.Int32).Value = idArea;
+                cmd.ExecuteNonQuery();
+                OracleDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        a.idArea = dr.GetInt32(0);
+                        a.descripcion = dr.GetString(1);
+                    }
+                }
+                connection.Close();
+                cmd.Dispose();
+                connection.Dispose();
+                return a;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
     }
 }

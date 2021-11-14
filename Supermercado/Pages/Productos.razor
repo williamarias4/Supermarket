@@ -5,14 +5,14 @@
 
 @inject NavigationManager NavigationManager
 
-<h3>Productos</h3>
 <div class="container">
+    <h3>Productos</h3>
     <div class="row">
         <div class="col-12">
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th scope="col">ID Area</th>
+                        <th scope="col">Area</th>
                         <th scope="col">EAN</th>
                         <th scope="col">Descripcion</th>
                         <th scope="col">Precio</th>
@@ -25,40 +25,40 @@
                 <tbody>
                     @foreach (var producto in listarProductos())
                     {
-                    <tr>
-                        <td>@producto.idArea</td>
-                        <td>@producto.ean</td>
-                        <td>@producto.descripcion</td>
-                        <td>@producto.precio</td>
-                        <td>@producto.cantidad</td>
-                        @if (producto.PLU == 0)
-                        {
-                            <td></td>
-                        }
-                        else
-                        {
-                            <td>@producto.PLU</td>
-                        }
-                        @if (producto.Peso == 0)
-                        {
-                            <td></td>
-                        }
-                        else
-                        {
-                            <td>@producto.Peso</td>
-                        }
-                    <td>
-                        <button type="button" class="btn btn-success" @onclick="() => enviarId(producto.id)">Modificar</button>
-                        @if (producto.Peso != 0 && producto.PLU != 0)
-                        {
-                            <button type="button" class="btn btn-danger" @onclick="() => eliminarProductoFresco(producto.id)">Eliminar</button>
-                        }
-                        else
-                        {
-                            <button type="button" class="btn btn-danger" @onclick="() => eliminarProducto(producto.id)">Eliminar</button>
-                        }
-                    </td>
-                    </tr>
+                        <tr>
+                            <td>@descripcionAreaPorProducto(producto.idArea)</td>
+                            <td>@producto.ean</td>
+                            <td>@producto.descripcion</td>
+                            <td>@producto.precio</td>
+                            <td>@producto.cantidad</td>
+                            @if (producto.PLU == 0)
+                            {
+                                <td></td>
+                            }
+                            else
+                            {
+                                <td>@producto.PLU</td>
+                            }
+                            @if (producto.Peso == 0)
+                            {
+                                <td></td>
+                            }
+                            else
+                            {
+                                <td>@producto.Peso</td>
+                            }
+                            <td>
+                                <button type="button" class="btn btn-success" @onclick="() => enviarId(producto.id)">Modificar</button>
+                                @if (producto.Peso != 0 && producto.PLU != 0)
+                                {
+                                    <button type="button" class="btn btn-danger" @onclick="() => eliminarProductoFresco(producto.id)">Eliminar</button>
+                                }
+                                else
+                                {
+                                    <button type="button" class="btn btn-danger" @onclick="() => eliminarProducto(producto.id)">Eliminar</button>
+                                }
+                            </td>
+                        </tr>
                     }
                 </tbody>
             </table>
@@ -119,6 +119,13 @@
         CRUD crud = new CRUD();
         crud.eliminarProductoFresco(id);
         eliminarProducto(id);
+    }
+
+    private string descripcionAreaPorProducto(int id)
+    {
+        CRUD crud = new CRUD();
+        string a = crud.areaPorProducto(id).descripcion;
+        return a;
     }
 
     private void enviarId(int id)
