@@ -170,5 +170,44 @@ namespace Supermercado.DAO
             {
             }
         }
+
+        public List<ProductoFresco> listarProductosFrescos()
+        {
+            try
+            {
+                List<ProductoFresco> productos = new List<ProductoFresco>();
+                OracleConnection connectionString = GetConnection();
+                string sql = "select p.pk_idproducto, p.fk_idarea, p.ean, p.descripcion, p.precio, p.cantidad, f.plu, f.peso  from producto p, productofresco f where p.pk_idproducto = f.fk_idproducto";
+                OracleConnection connection = connectionString;
+                connection.Open();
+                OracleCommand cmd = connection.CreateCommand();
+                cmd.CommandText = sql;
+                OracleDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        ProductoFresco p = new ProductoFresco();
+                        p.id = dr.GetInt32(0);
+                        p.idArea = dr.GetInt32(1);
+                        p.ean = dr.GetInt64(2);
+                        p.descripcion = dr.GetString(3);
+                        p.precio = dr.GetFloat(4);
+                        p.cantidad = dr.GetInt32(5);
+                        p.PLU = dr.GetInt32(6);
+                        p.Peso = dr.GetFloat(7);
+                        productos.Add(p);
+                    }
+                }
+                connection.Close();
+                cmd.Dispose();
+                connection.Dispose();
+                return productos;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
     }
 }
