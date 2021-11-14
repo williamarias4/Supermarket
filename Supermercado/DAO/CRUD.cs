@@ -127,6 +127,42 @@ namespace Supermercado.DAO
             }
         }
 
+        public ProductoFresco productoFrescoPorId(int id)
+        {
+            try
+            {
+                ProductoFresco f = new ProductoFresco();
+                OracleConnection connectionString = GetConnection();
+                string sql = "select pk_idproductofresco, fk_idproducto, PLU, peso from productofresco where fk_idproducto = :id";
+                OracleConnection connection = connectionString;
+                connection.Open();
+                OracleCommand cmd = connection.CreateCommand();
+                cmd.CommandType = System.Data.CommandType.Text;
+                cmd.CommandText = sql;
+                cmd.Parameters.Add("id", OracleDbType.Int32).Value = id;
+                cmd.ExecuteNonQuery();
+                OracleDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        f.IdFresco = dr.GetInt32(0);
+                        f.id = dr.GetInt32(1);
+                        f.PLU = dr.GetInt32(2);
+                        f.Peso = dr.GetFloat(3);
+                    }
+                }
+                connection.Close();
+                cmd.Dispose();
+                connection.Dispose();
+                return f;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public void actualizarProducto(Producto p)
         {
             try
@@ -151,6 +187,29 @@ namespace Supermercado.DAO
             {
             }
         }
+
+        public void actualizarProductoFresco(ProductoFresco f)
+        {
+            try
+            {
+                OracleConnection connectionString = GetConnection();
+                OracleCommand cmd = new OracleCommand();
+                cmd.Connection = connectionString;
+                cmd.CommandText = "actualizar_productofresco_sp";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("p_pk_idproducto", OracleDbType.Int32).Value = f.id;
+                cmd.Parameters.Add("plu", OracleDbType.Long).Value = f.PLU;
+                cmd.Parameters.Add("peso", OracleDbType.Varchar2).Value = f.Peso;
+                connectionString.Open();
+                cmd.ExecuteNonQuery();
+                connectionString.Close();
+                cmd.Dispose();
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
         public void eliminarProducto(int id)
         {
             try
@@ -161,6 +220,27 @@ namespace Supermercado.DAO
                 cmd.CommandText = "eliminar_producto_sp";
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.Add("pk_idproducto", OracleDbType.Int32).Value = id;
+                connectionString.Open();
+                cmd.ExecuteNonQuery();
+                connectionString.Close();
+                cmd.Dispose();
+                eliminarProductoFresco(id);
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
+        public void eliminarProductoFresco(int id)
+        {
+            try
+            {
+                OracleConnection connectionString = GetConnection();
+                OracleCommand cmd = new OracleCommand();
+                cmd.Connection = connectionString;
+                cmd.CommandText = "eliminar_productofresco_sp";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("p_pk_idproducto", OracleDbType.Int32).Value = id;
                 connectionString.Open();
                 cmd.ExecuteNonQuery();
                 connectionString.Close();

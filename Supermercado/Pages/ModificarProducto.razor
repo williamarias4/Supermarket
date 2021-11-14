@@ -33,6 +33,19 @@
             <input @bind-value="cantidad" type="number" class="form-control" id="inputCantidad" placeholder="50">
         </div>
     </div>
+    @if (plu != 0 && peso != 0)
+    {
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="inputPlu">PLU</label>
+                <input @bind-value="plu" type="number" class="form-control" id="inputPlu" placeholder="1000" min="1">
+            </div>
+            <div class="form-group col-md-6">
+                <label for="inputPeso">Peso</label>
+                <input @bind-value="peso" type="number" class="form-control" id="inputPeso" placeholder="50" min="1">
+            </div>
+        </div>
+    }
     <button @onclick="modificarProducto" type="submit" class="btn btn-primary">Modificar</button>
 </form>
 
@@ -44,17 +57,26 @@
     private string descripcion;
     private float precio;
     private int cantidad;
+    private int plu = 0;
+    private float peso = 0;
 
     public void cargarDatos()
     {
         Producto p = new Producto();
+        ProductoFresco f = new ProductoFresco();
         CRUD crud = new CRUD();
         p = crud.productoPorId(id);
+        f = crud.productoFrescoPorId(id);
         //idArea = p.idArea;
         ean = p.ean;
         descripcion = p.descripcion;
         precio = p.precio;
         cantidad = p.cantidad;
+        if (f!=null)
+        {
+            plu = f.PLU;
+            peso = f.Peso;
+        }
     }
 
     private void modificarProducto()
@@ -62,6 +84,11 @@
         Producto p = new Producto(id, 1, ean, descripcion, precio, cantidad);
         CRUD crud = new CRUD();
         crud.actualizarProducto(p);
+        if (plu != 0 && peso != 0)
+        {
+            ProductoFresco f = new ProductoFresco(p, 0, plu, peso);
+            crud.actualizarProductoFresco(f);
+        }
     }
 
     protected override async Task OnInitializedAsync()
