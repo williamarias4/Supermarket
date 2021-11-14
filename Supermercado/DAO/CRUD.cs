@@ -16,8 +16,8 @@ namespace Supermercado.DAO
                 cmd.Connection = connectionString;
                 cmd.CommandText = "insertar_producto_sp";
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.Add("id", OracleDbType.Int32).Value = p.id;
-                cmd.Parameters.Add("idArea", OracleDbType.Int32).Value = p.idArea;
+                cmd.Parameters.Add("pk_idproducto)", OracleDbType.Int32).Value = p.id;
+                cmd.Parameters.Add("fk_idArea", OracleDbType.Int32).Value = p.idArea;
                 cmd.Parameters.Add("ean", OracleDbType.Long).Value = p.ean;
                 cmd.Parameters.Add("descripcion", OracleDbType.Varchar2).Value = p.descripcion;
                 cmd.Parameters.Add("precio", OracleDbType.BinaryFloat).Value = p.precio;
@@ -29,6 +29,30 @@ namespace Supermercado.DAO
             } catch (Exception ex) {
             }
         }
+
+        public void insertarProductoFresco(ProductoFresco f)
+        {
+            try
+            {
+                OracleConnection connectionString = GetConnection();
+                OracleCommand cmd = new OracleCommand();
+                cmd.Connection = connectionString;
+                cmd.CommandText = "insertar_productofresco_sp";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("pk_idproductofresco", OracleDbType.Int32).Value = f.IdFresco;
+                cmd.Parameters.Add("fk_idproducto", OracleDbType.Int32).Value = f.id;
+                cmd.Parameters.Add("plu", OracleDbType.Int32).Value = f.PLU;
+                cmd.Parameters.Add("peso", OracleDbType.BinaryFloat).Value = f.Peso;
+                connectionString.Open();
+                cmd.ExecuteNonQuery();
+                connectionString.Close();
+                cmd.Dispose();
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
         public List<Producto> listarProductos()
         {
             try
@@ -112,8 +136,8 @@ namespace Supermercado.DAO
                 cmd.Connection = connectionString;
                 cmd.CommandText = "actualizar_producto_sp";
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.Add("id", OracleDbType.Int32).Value = p.id;
-                cmd.Parameters.Add("idArea", OracleDbType.Int32).Value = p.idArea;
+                cmd.Parameters.Add("pk_idproducto", OracleDbType.Int32).Value = p.id;
+                cmd.Parameters.Add("fk_idArea", OracleDbType.Int32).Value = p.idArea;
                 cmd.Parameters.Add("ean", OracleDbType.Long).Value = p.ean;
                 cmd.Parameters.Add("descripcion", OracleDbType.Varchar2).Value = p.descripcion;
                 cmd.Parameters.Add("precio", OracleDbType.BinaryFloat).Value = p.precio;
@@ -136,7 +160,7 @@ namespace Supermercado.DAO
                 cmd.Connection = connectionString;
                 cmd.CommandText = "eliminar_producto_sp";
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.Add("id", OracleDbType.Int32).Value = id;
+                cmd.Parameters.Add("pk_idproducto", OracleDbType.Int32).Value = id;
                 connectionString.Open();
                 cmd.ExecuteNonQuery();
                 connectionString.Close();
