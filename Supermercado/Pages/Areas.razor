@@ -23,7 +23,7 @@
                             <td>@area.descripcion</td>
                             <td>
                                 <button type="button" class="btn btn-success" @onclick="() => enviarId(area.idArea)">Modificar</button>
-                                <button type="button" class="btn btn-danger">Eliminar</button>
+                                <button type="button" class="btn btn-danger" @onclick="() => eliminarArea(area.idArea)">Eliminar</button>
                             </td>
                         </tr>
                     }
@@ -46,5 +46,11 @@
     private void enviarId(int id)
     {
         NavigationManager.NavigateTo("modificarArea/" + id, forceLoad: true);
+    }
+
+    private void eliminarArea(int id)
+    {
+        CRUD crud = new CRUD();
+        crud.eliminarArea(id);
     }
 }

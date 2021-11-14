@@ -79,3 +79,12 @@ begin
   update SUPER.area set descripcion = p_descripcion where pk_idarea = p_pk_idarea;
   commit;
 end actualizar_area_sp;
+
+create or replace procedure eliminar_area_sp 
+(
+  p_pk_idarea in number 
+) as 
+begin
+  delete from SUPER.area where  pk_idarea = p_pk_idarea;
+  commit;
+end eliminar_area_sp;

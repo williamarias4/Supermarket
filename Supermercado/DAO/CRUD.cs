@@ -409,6 +409,27 @@ namespace Supermercado.DAO
             }
         }
 
+        public void eliminarArea(int id)
+        {
+            try
+            {
+                OracleConnection connectionString = GetConnection();
+                OracleCommand cmd = new OracleCommand();
+                cmd.Connection = connectionString;
+                cmd.CommandText = "eliminar_area_sp";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("p_pk_idarea", OracleDbType.Int32).Value = id;
+                connectionString.Open();
+                cmd.ExecuteNonQuery();
+                connectionString.Close();
+                cmd.Dispose();
+                eliminarProductoFresco(id);
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
         public void eliminarProductoFresco(int id)
         {
             try
