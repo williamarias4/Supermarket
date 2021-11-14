@@ -94,27 +94,55 @@ namespace Supermercado.DAO
         }
 
 
-
-        public Usuario validateCredentials(string username, string password)
+        public Rol buscarRol(int idRol)
         {
-            Usuario user = new Usuario();
+            Rol rol = new Rol();
             OracleConnection connectionString = GetConnection();
-            string sql = "select verificar_usuario_sp(nombreusuario, contrasena) from dual";
+            string sql = "select pk_idrol, descripcion from SUPER.rol where pk_idrol =:id";
             OracleConnection connection = connectionString;
             connection.Open();
             OracleCommand cmd = connection.CreateCommand();
             cmd.CommandText = sql;
-            cmd.Parameters.Add("nombreusuario", OracleDbType.Int32).Value = username;
-            cmd.Parameters.Add("contrasena", OracleDbType.Int32).Value = user.CreateMD5(password);
+            cmd.Parameters.Add("id", OracleDbType.Int32).Value = idRol;
             cmd.ExecuteNonQuery();
             OracleDataReader dr = cmd.ExecuteReader();
             if (dr.HasRows)
             {
                 while (dr.Read())
                 {
-                    //Rol rol = buscarRol(dr.getInt32(1));
+                    rol.IdRol = dr.GetInt32(0);
+                    rol.Descripcion = dr.GetString(1);
+                }
+            }
+            connection.Close();
+            cmd.Dispose();
+            connection.Dispose();
+            return rol;
+        }
+
+
+        public Usuario validateCredentials(string username, string password)
+        {
+            Usuario user = new Usuario();
+            OracleConnection connectionString = GetConnection();
+            string sql = "select pk_idusuario,fk_idrol,nombreusuario,contrasena,nombre,apellido1,apellido2 from SUPER.usuario where nombreusuario =:usern and contrasena =: pass";
+            //string sql = "select verificar_usuario_sp('"+username+"','"+ password+"')"+" from dual";
+            OracleConnection connection = connectionString;
+            connection.Open();
+            OracleCommand cmd = connection.CreateCommand();
+            cmd.CommandText = sql;
+            cmd.Parameters.Add("nombreusuario", OracleDbType.Varchar2).Value = username;
+            cmd.Parameters.Add("contrasena", OracleDbType.Varchar2).Value = user.CreateMD5(password);
+            cmd.ExecuteNonQuery();
+            OracleDataReader dr = cmd.ExecuteReader();
+            if (dr.HasRows)
+            {
+                while (dr.Read())
+                {
+                    
                     user.IdUsuario = dr.GetInt32(0);
-                    //user.Rol = rol;
+                    Rol rol = buscarRol(dr.GetInt32(1));
+                    user.Rol = rol;
                     user.NombreUsuario= username;
                     user.Contrasena= password;
                     user.Nombre = dr.GetString(4);
