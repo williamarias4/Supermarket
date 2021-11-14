@@ -47,10 +47,17 @@
                         {
                             <td>@producto.Peso</td>
                         }
-                        <td>
-                            <button type="button" class="btn btn-success" @onclick="() => enviarId(producto.id)">Modificar</button>
+                    <td>
+                        <button type="button" class="btn btn-success" @onclick="() => enviarId(producto.id)">Modificar</button>
+                        @if (producto.Peso != 0 && producto.PLU != 0)
+                        {
+                            <button type="button" class="btn btn-danger" @onclick="() => eliminarProductoFresco(producto.id)">Eliminar</button>
+                        }
+                        else
+                        {
                             <button type="button" class="btn btn-danger" @onclick="() => eliminarProducto(producto.id)">Eliminar</button>
-                        </td>
+                        }
+                    </td>
                     </tr>
                     }
                 </tbody>
@@ -105,6 +112,13 @@
     {
         CRUD crud = new CRUD();
         crud.eliminarProducto(id);
+    }
+
+    private void eliminarProductoFresco(int id)
+    {
+        CRUD crud = new CRUD();
+        crud.eliminarProductoFresco(id);
+        eliminarProducto(id);
     }
 
     private void enviarId(int id)
