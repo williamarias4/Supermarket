@@ -111,15 +111,17 @@
                             <td>@movimiento.total</td>
                         </tr>
                         <tr>
+                            <td></td>
                             <td colspan="2">Producto</td>
-                            <td colspan="2">Cantidad</td>
+                            <td colspan="1">Cantidad</td>
                             <td colspan="2">Subtotal</td>
                         </tr>
                         @foreach (var detalle in movimiento.detelle)
                         {
                             <tr>
+                                <td></td>
                                 <td colspan="2">@detalle.EAN</td>
-                                <td colspan="2">@detalle.cantidad</td>
+                                <td colspan="1">@detalle.cantidad</td>
                                 <td colspan="2">@detalle.subTotal</td>
                             </tr>
 

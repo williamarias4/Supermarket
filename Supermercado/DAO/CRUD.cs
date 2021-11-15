@@ -514,12 +514,12 @@ namespace Supermercado.DAO
                     da.Fill(ds);
                 }
 
-                var dtFactura = ds.Tables[0].AsEnumerable().Distinct();
+                var dtFactura = ds.Tables[0].AsEnumerable().GroupBy(x => x["IDFACTURA"].ToString()).Select(x => x.First()).ToList();
 
                 foreach (DataRow row in dtFactura)
                 {
                     List<DetalleFacturaLog> detalles = new List<DetalleFacturaLog>();
-                    foreach (DataRow detalle in ds.Tables[0].AsEnumerable().Where(x => x["PK_IDBITACORAFACTURA"] == row["PK_IDBITACORAFACTURA"]).AsEnumerable())
+                    foreach (DataRow detalle in ds.Tables[0].AsEnumerable().Where(x => x["IDFACTURA"].ToString() == row["IDFACTURA"].ToString()).AsEnumerable())
                     {
                         detalles.Add(new DetalleFacturaLog() 
                         {
