@@ -1,0 +1,24 @@
+﻿@page "/formularioArea"
+
+@using Supermercado.DAO;
+@using Supermercado.Data;
+
+<form class="form-group col-md-12">
+    <h3>Formulario de creacion de areas</h3>
+    <div class="form-row">
+        <label for="inputDescripcion">Descripcion</label>
+        <input @bind="descripcion" type="text" class="form-control" id="inputDescripcion" placeholder="Tecnologia">
+    </div>
+    <button @onclick="insertarArea" type="submit" class="btn btn-primary">Crear</button>
+</form>
+
+@code {
+    private string descripcion;
+
+    private void insertarArea()
+    {
+        Area a = new Area(100, descripcion);
+        CRUD crud = new CRUD();
+        crud.insertarArea(a);
+    }
+}

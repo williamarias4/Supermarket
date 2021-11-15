@@ -1,0 +1,56 @@
+﻿@page "/areas"
+
+@using Supermercado.DAO;
+@using Supermercado.Data;
+
+@inject NavigationManager NavigationManager
+
+<div class="container">
+    <h3>Areas</h3>
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">Area</th>
+                        <th scope="col">Accion</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var area in listarAreas())
+                    {
+                        <tr>
+                            <td>@area.descripcion</td>
+                            <td>
+                                <button type="button" class="btn btn-success" @onclick="() => enviarId(area.idArea)">Modificar</button>
+                                <button type="button" class="btn btn-danger" @onclick="() => eliminarArea(area.idArea)">Eliminar</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <NavLink href="formularioArea">
+        <button class="btn btn-primary">Crear area</button>
+    </NavLink>
+</div>
+
+@code {
+    private List<Area> listarAreas()
+    {
+        CRUD crud = new CRUD();
+        return crud.listarAreas();
+    }
+
+    private void enviarId(int id)
+    {
+        NavigationManager.NavigateTo("modificarArea/" + id, forceLoad: true);
+    }
+
+    private void eliminarArea(int id)
+    {
+        CRUD crud = new CRUD();
+        crud.eliminarArea(id);
+    }
+}

@@ -571,6 +571,26 @@ begin
     from bitacoracajero;
 end seleccionar_bitacoraCajero;
 
+create or replace function verificar_usuario_sp(x in varchar2, y in varchar2)
+return varchar2
+as
+  match_count number;
+begin
+  select count(*)
+    into match_count
+    from usuario
+    where nombreusuario=x
+    and contrasena=y;
+  if match_count = 0 then
+    return 'Nombre de usuario o contrasenia incorrecta!';
+  elsif match_count = 1 then
+    return 'Iniciando Sesion!';
+  else
+    return 'Error!';
+  end if;
+end;
+/
+
 
 --Areas
 INSERT INTO AREA (PK_IDAREA, DESCRIPCION) VALUES (1, 'Abarrotes');
@@ -579,7 +599,7 @@ INSERT INTO AREA (PK_IDAREA, DESCRIPCION) VALUES (3, 'Mercancías');
 INSERT INTO AREA (PK_IDAREA, DESCRIPCION) VALUES (4, 'Frescos');
 --Roles
 INSERT INTO ROL (pk_idRol, descripcion) VALUES (1, 'Cajero');
-INSERT INTO ROL (pk_idRol, descripcion) VALUES (2, 'Gerente Área');
+INSERT INTO ROL (pk_idRol, descripcion) VALUES (2, 'Gerente �?rea');
 INSERT INTO ROL (pk_idRol, descripcion) VALUES (3, 'Gerente General');
 INSERT INTO ROL (pk_idRol, descripcion) VALUES (4, 'Sistemas');
 --Usuarios
@@ -647,4 +667,4 @@ INSERT INTO PRODUCTO (pk_idproducto, fk_idarea, ean, descripcion, precio, cantid
 INSERT INTO PRODUCTOFRESCO (PK_IDPRODUCTOFRESCO, fk_idproducto, plu, peso) VALUES (1, 13, 11111, 200);
 INSERT INTO PRODUCTOFRESCO (PK_IDPRODUCTOFRESCO, fk_idproducto, plu, peso) VALUES (2, 14, 22222, 100);
 INSERT INTO PRODUCTOFRESCO (PK_IDPRODUCTOFRESCO, fk_idproducto, plu, peso) VALUES (3, 15, 33333, 150);
-INSERT INTO PRODUCTOFRESCO (PK_IDPRODUCTOFRES, fk_idproducto, plu, peso) VALUES (4, 16, 44444, 175);
+INSERT INTO PRODUCTOFRESCO (PK_IDPRODUCTOFRESCO, fk_idproducto, plu, peso) VALUES (4, 16, 44444, 175);
