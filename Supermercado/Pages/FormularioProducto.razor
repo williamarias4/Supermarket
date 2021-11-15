@@ -8,28 +8,30 @@
     <div class="form-row">
         <div class="form-group col-md-6">
             <label for="inputArea">Area</label>
-            <select id="inputArea" class="form-control">
-                <option selected>Choose...</option>
-                <option>...</option>
+            <select id="inputArea" class="form-control" @bind="idArea" required>
+                @foreach (var area in listarAreas())
+                {
+                    <option value="@area.idArea">@area.descripcion</option>
+                }
             </select>
         </div>
         <div class="form-group col-md-6">
             <label for="inputEAN">EAN</label>
-            <input @bind="ean" type="number" class="form-control" id="inputEAN" placeholder="987654321">
+            <input @bind="ean" type="number" class="form-control" id="inputEAN" placeholder="987654321" required>
         </div>
     </div>
     <div class="form-row">
         <label for="inputDescripcion">Descripcion</label>
-        <input @bind="descripcion" type="text" class="form-control" id="inputDescripcion" placeholder="Arroz Tio Pelon">
+        <input @bind="descripcion" type="text" class="form-control" id="inputDescripcion" placeholder="Arroz Tio Pelon" required>
     </div>
     <div class="form-row">
         <div class="form-group col-md-6">
             <label for="inputPrecio">Precio</label>
-            <input @bind="precio" type="number" step="0.01" class="form-control" id="inputPrecio" placeholder="1000.5">
+            <input @bind="precio" type="number" step="0.01" class="form-control" id="inputPrecio" placeholder="1000.5" required>
         </div>
         <div class="form-group col-md-6">
             <label for="inputCantidad">Cantidad</label>
-            <input @bind="cantidad" type="number" class="form-control" id="inputCantidad" placeholder="50">
+            <input @bind="cantidad" type="number" class="form-control" id="inputCantidad" placeholder="50" required>
         </div>
     </div>
     <div class="form-row">
@@ -50,15 +52,22 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="inputPLU">PLU</label>
-                <input @bind="PLU" type="number" class="form-control" id="inputPLU" placeholder="100" min="1">
+                <input @bind="PLU" type="number" class="form-control" id="inputPLU" placeholder="100" min="1" required>
             </div>
             <div class="form-group col-md-6">
                 <label for="inputPeso">Peso en gramos</label>
-                <input @bind="peso" type="number" step="0.01" class="form-control" id="inputPeso" placeholder="50.5" min="1">
+                <input @bind="peso" type="number" step="1.01" class="form-control" id="inputPeso" placeholder="50.5" min="1" required>
             </div>
         </div>
     }
-    <button @onclick="insertarProducto" type="submit" class="btn btn-primary">Crear</button>
+    @if (!string.IsNullOrWhiteSpace(descripcion))
+    {
+        <button @onclick="insertarProducto" type="submit" class="btn btn-primary">Crear</button>
+    }
+    else
+    {
+        <button @onclick="insertarProducto" type="submit" class="btn btn-primary" disabled>Crear</button>
+    }
 </form>
 
 @code {
@@ -69,10 +78,11 @@
     private bool esFresco = false;
     private int PLU;
     private int peso;
+    private int idArea;
 
     private void insertarProducto()
     {
-        Producto p = new Producto(31, 1, ean, descripcion, precio, cantidad);
+        Producto p = new Producto(32, idArea, ean, descripcion, precio, cantidad);
         CRUD crud = new CRUD();
         crud.insertarProducto(p);
         if (esFresco)
@@ -90,5 +100,11 @@
     public void estadoFrescoFalse()
     {
         esFresco = false;
+    }
+
+    private List<Area> listarAreas()
+    {
+        CRUD crud = new CRUD();
+        return crud.listarAreas();
     }
 }

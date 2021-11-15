@@ -7,9 +7,16 @@
     <h3>Formulario de creacion de areas</h3>
     <div class="form-row">
         <label for="inputDescripcion">Descripcion</label>
-        <input @bind="descripcion" type="text" class="form-control" id="inputDescripcion" placeholder="Tecnologia">
+        <input @bind="descripcion" type="text" class="form-control" minlength="1" id="inputDescripcion" placeholder="Tecnologia" required>
     </div>
-    <button @onclick="insertarArea" type="submit" class="btn btn-primary">Crear</button>
+    @if (!string.IsNullOrWhiteSpace(descripcion))
+    {
+        <button @onclick="insertarArea" type="submit" class="btn btn-primary">Crear</button>
+    }
+    else
+    {
+        <button @onclick="insertarArea" type="submit" class="btn btn-primary" disabled>Crear</button>
+    }
 </form>
 
 @code {
