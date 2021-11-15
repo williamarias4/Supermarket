@@ -1,0 +1,158 @@
+﻿@page "/Bitacoras"
+
+@using Supermercado.DAO;
+@using Supermercado.Data;
+
+@inject NavigationManager NavigationManager
+
+<h3>Bitacoras</h3>
+
+<div class="container">
+    <div class="row">
+        <div class=" col-2">
+            <h4>Movimiento</h4>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Id Usuario</th>
+                        <th scope="col">Nombre Usuario</th>
+                        <th scope="col">Tabla</th>
+                        <th scope="col">Operación</th>
+                        <th scope="col">Descripción</th>
+                        <th scope="col">Fecha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var movimiento in LogMovimientos())
+                    {
+                        <tr>
+                            <td>@movimiento.id</td>
+                            <td>@movimiento.idUsuario</td>
+                            <td>@movimiento.nombreUsuario</td>
+                            <td>@movimiento.tabla</td>
+                            <td>@movimiento.tipoTransaccion</td>
+                            <td>@movimiento.descripcion</td>
+                            <td>@movimiento.fecha</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class=" col-2">
+            <h4>Cajeros</h4>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Id Usuario</th>
+                    <th scope="col">Nombre Cajero</th>
+                    <th scope="col">Número Caja</th>
+                    <th scope="col">Id Factura</th>
+                </tr>
+                </thead>
+                <tbody>
+                    @foreach (var movimiento in LogCajeros())
+                    {
+                        <tr>
+                            <td>@movimiento.id</td>
+                            <td>@movimiento.idUsuario</td>
+                            <td>@movimiento.nombreUsuario</td>
+                            <td>@movimiento.numeroCaja</td>
+                            <td>@movimiento.idFactura</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class=" col-2">
+            <h4>Facturas</h4>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 table-responsive">
+            <table class="table table-bordered scroll">
+                <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Id Usuario</th>
+                        <th scope="col">Nombre Cajero</th>
+                        <th scope="col">Número de Caja</th>
+                        <th scope="col">Factura</th>
+                        <th scope="col">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var movimiento in LogFacturas())
+                    {
+                        <tr>
+                            <td>@movimiento.id</td>
+                            <td>@movimiento.idUsuario</td>
+                            <td>@movimiento.nombreUsuario</td>
+                            <td>@movimiento.numeroCaja</td>
+                            <td>@movimiento.idFactura</td>
+                            <td>@movimiento.total</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Producto</td>
+                            <td colspan="2">Cantidad</td>
+                            <td colspan="2">Subtotal</td>
+                        </tr>
+                        @foreach (var detalle in movimiento.detelle)
+                        {
+                            <tr>
+                                <td colspan="2">@detalle.EAN</td>
+                                <td colspan="2">@detalle.cantidad</td>
+                                <td colspan="2">@detalle.subTotal</td>
+                            </tr>
+
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<LogMovimiento> LogMovimientos()
+    {
+        List<LogMovimiento> p = new List<LogMovimiento>();
+        CRUD crud = new CRUD();
+        p = crud.logsMovimientos();
+        return p;
+    }
+
+    private List<LogFactura> LogFacturas()
+    {
+        List<LogFactura> p = new List<LogFactura>();
+        CRUD crud = new CRUD();
+        p = crud.logsFactura();
+        return p;
+    }
+
+    private List<LogCajero> LogCajeros()
+    {
+        List<LogCajero> p = new List<LogCajero>();
+        CRUD crud = new CRUD();
+        p = crud.logsCajero();
+        return p;
+    }
+}

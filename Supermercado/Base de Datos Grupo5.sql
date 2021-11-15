@@ -498,7 +498,7 @@ begin
   commit;
 end eliminar_usuario_sp;
 /
-create or replace NONEDITIONABLE procedure seleccionar_productos
+create or replace  procedure seleccionar_productos
 (
 result OUT SYS_REFCURSOR
 )
@@ -518,7 +518,58 @@ begin
     inner join area a on p.fk_idarea = a.pk_idarea
     left join productofresco f on p.pk_idproducto = f.fk_idproducto;
 end seleccionar_productos;
-
+/
+create or replace  procedure seleccionar_bitacoraMovimientos
+(
+result OUT SYS_REFCURSOR
+)
+as
+begin
+    OPEN result FOR
+	select pk_idbitacoramovimientos,
+    idusuario,
+    nombreusuario,
+    tabla,
+    tipotransaccion,
+    descripcion,
+    fecha
+    from bitacoramovimientos;
+end seleccionar_bitacoraMovimientos;
+/
+create or replace  procedure seleccionar_bitacoraFactura
+(
+result OUT SYS_REFCURSOR
+)
+as
+begin
+    OPEN result FOR
+	select PK_IDBITACORAFACTURA ,
+            IDFACTURA ,
+            EAN ,
+            CANTIDAD ,
+            SUBTOTAL ,
+            TOTAL ,
+            IDUSUARIO ,
+            NOMBREUSUARIO ,
+            FECHA 
+    from bitacorafactura;
+end seleccionar_bitacoraFactura;
+/
+create or replace  procedure seleccionar_bitacoraCajero
+(
+result OUT SYS_REFCURSOR
+)
+as
+begin
+    OPEN result FOR
+	select PK_IDBITACORACAJERO ,
+            IDUSUARIO ,
+            NOMBREUSUARIO ,
+            NUMEROCAJA ,
+            IDFACTURA ,
+            FECHA 
+    from bitacoracajero;
+end seleccionar_bitacoraCajero;
 
 
 --Areas

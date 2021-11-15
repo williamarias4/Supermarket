@@ -48,3 +48,10 @@ a, .btn-link {
         right: 0.75rem;
         top: 0.5rem;
     }
+
+
+table.scroll tbody {
+    height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
