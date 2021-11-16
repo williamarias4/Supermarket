@@ -1,3 +1,7 @@
+CREATE SEQUENCE area_sq start with 1 increment by 1 cache 2;
+CREATE SEQUENCE productoFresco_sq start with 1 increment by 1 cache 2;
+CREATE SEQUENCE producto_sq start with 1 increment by 1 cache 2;
+
 create or replace procedure actualizar_producto_sp 
 (
 p_pk_idproducto in number, p_fk_idarea in number, p_ean in number, p_descripcion in varchar2, p_precio in number, p_cantidad in number
@@ -10,15 +14,14 @@ end actualizar_producto_sp;
 
 create or replace procedure insertar_producto_sp 
 (
-  p_pk_idproducto in number 
-, p_fk_idarea in number 
+p_fk_idarea in number 
 , p_ean in number 
 , p_descripcion in varchar2 
 , p_precio in number 
 , p_cantidad in number 
 ) as 
 begin
-  insert into SUPER.producto(pk_idproducto, fk_idarea, ean, descripcion, precio, cantidad) values(p_pk_idproducto, p_fk_idarea, p_ean, p_descripcion, p_precio, p_cantidad);
+  insert into SUPER.producto(pk_idproducto, fk_idarea, ean, descripcion, precio, cantidad) values(PRODUCTO_SQ.nextval, p_fk_idarea, p_ean, p_descripcion, p_precio, p_cantidad);
   commit;
 end insertar_producto_sp;
 
@@ -33,13 +36,12 @@ end eliminar_producto_sp;
 
 create or replace procedure insertar_productofresco_sp 
 (
-  p_pk_idproductofresco in number 
-, p_fk_idproducto in number
+p_fk_idproducto in number
 , p_plu in number
 , p_peso in number
 ) as 
 begin
-  insert into SUPER.productofresco(pk_idproductofresco, fk_idproducto, plu, peso) values(p_pk_idproductofresco, p_fk_idproducto, p_plu, p_peso);
+  insert into SUPER.productofresco(pk_idproductofresco, fk_idproducto, plu, peso) values(PRODUCTOFRESCO_SQ.nextval, p_fk_idproducto, p_plu, p_peso);
   commit;
 end insertar_productofresco_sp;
 
@@ -63,11 +65,10 @@ end eliminar_productofresco_sp;
 
 create or replace procedure insertar_area_sp 
 (
-  p_pk_idarea in number 
-, p_descripcion in varchar2
+p_descripcion in varchar2
 ) as 
 begin
-  insert into SUPER.area(pk_idarea, descripcion) values(p_pk_idarea, p_descripcion);
+  insert into SUPER.area(pk_idarea, descripcion) values(AREA_SQ.nextval, p_descripcion);
   commit;
 end insertar_area_sp;
 

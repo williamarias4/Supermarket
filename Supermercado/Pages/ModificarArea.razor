@@ -7,9 +7,16 @@
     <h3>Formulario de modificacion de area</h3>
     <div class="form-row">
         <label for="inputDescripcion">Descripcion</label>
-        <input @bind-value="descripcion" type="text" class="form-control" id="inputDescripcion" placeholder="Tecnologia">
+        <input @bind-value="descripcion" type="text" class="form-control" id="inputDescripcion" placeholder="Tecnologia" required>
     </div>
-    <button @onclick="modificarArea" type="submit" class="btn btn-primary">Modificar</button>
+    @if (!string.IsNullOrWhiteSpace(descripcion))
+    {
+        <button @onclick="modificarArea" type="submit" class="btn btn-primary">Modificar</button>
+    }
+    else
+    {
+        <button @onclick="modificarArea" type="submit" class="btn btn-primary" disabled>Modificar</button>
+    }
 </form>
 
 @code {

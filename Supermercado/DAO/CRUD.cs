@@ -19,7 +19,6 @@ namespace Supermercado.DAO
                 cmd.Connection = connectionString;
                 cmd.CommandText = "insertar_producto_sp";
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.Add("pk_idproducto)", OracleDbType.Int32).Value = p.id;
                 cmd.Parameters.Add("fk_idArea", OracleDbType.Int32).Value = p.idArea;
                 cmd.Parameters.Add("ean", OracleDbType.Long).Value = p.ean;
                 cmd.Parameters.Add("descripcion", OracleDbType.Varchar2).Value = p.descripcion;
@@ -43,7 +42,6 @@ namespace Supermercado.DAO
                 cmd.Connection = connectionString;
                 cmd.CommandText = "insertar_area_sp";
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.Add("pk_idarea)", OracleDbType.Int32).Value = a.idArea;
                 cmd.Parameters.Add("descripcion", OracleDbType.Varchar2).Value = a.descripcion;
                 connectionString.Open();
                 cmd.ExecuteNonQuery();
@@ -64,7 +62,6 @@ namespace Supermercado.DAO
                 cmd.Connection = connectionString;
                 cmd.CommandText = "insertar_productofresco_sp";
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.Add("pk_idproductofresco", OracleDbType.Int32).Value = f.IdFresco;
                 cmd.Parameters.Add("fk_idproducto", OracleDbType.Int32).Value = f.id;
                 cmd.Parameters.Add("plu", OracleDbType.Int32).Value = f.PLU;
                 cmd.Parameters.Add("peso", OracleDbType.BinaryFloat).Value = f.Peso;
@@ -186,7 +183,7 @@ namespace Supermercado.DAO
             {
                 List<Producto> productos = new List<Producto>();
                 OracleConnection connectionString = GetConnection();
-                string sql = "select producto.pk_idproducto, producto.fk_idarea, producto.ean, producto.descripcion, producto.precio, producto.cantidad  from SUPER.producto";
+                string sql = "select producto.pk_idproducto, producto.fk_idarea, producto.ean, producto.descripcion, producto.precio, producto.cantidad from SUPER.producto order by 1 DESC";
                 OracleConnection connection = connectionString;
                 connection.Open();
                 OracleCommand cmd = connection.CreateCommand();

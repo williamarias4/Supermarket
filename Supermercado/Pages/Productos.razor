@@ -72,9 +72,14 @@
 @code {
     private List<ProductoFresco> listarProductos()
     {
+        //Hago la lista de productos
         List<Producto> p = new List<Producto>();
+        //Hago la lista de productos frescos
         List<ProductoFresco> f = new List<ProductoFresco>();
+        //Hago otra lista deproductos frescos que va a contener ambos (productos y productos frescos pero a los productos les pone un plu, id, y peso de cero
+        //entonces hay otra condicion de que si esos atributos son cero entonces muestre en pantalla ""
         List<ProductoFresco> aux = new List<ProductoFresco>();
+        //Hago otra lista que va a que recorrer a p y f y me da a decir en que espacios de la lista de p se encuentran los productos que son iguales a f
         List<int> x = new List<int>();
         CRUD crud = new CRUD();
         p = crud.listarProductos();
@@ -101,9 +106,16 @@
                 else
                 {
                     aux.Add(f[z]);
-                    z++;
+                    if (x[z]+1 < x.Count)
+                    {
+                        z++;
+                    }
                 }
             }
+        }
+        if (x.Count == 0 && p.Count != 0)
+        {
+            aux.Add(new ProductoFresco(p[0], 0, 0, 0));
         }
         return aux;
     }
