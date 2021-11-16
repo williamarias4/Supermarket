@@ -17,7 +17,7 @@
         </div>
         <div class="form-group col-md-6">
             <label for="inputEAN">EAN</label>
-            <input @bind-value="ean" type="number" class="form-control" id="inputEAN" placeholder="987654321" required>
+            <input @bind-value="ean" type="number" class="form-control" id="inputEAN" min="1" step="1" required>
         </div>
     </div>
     <div class="form-row">
@@ -26,12 +26,12 @@
     </div>
     <div class="form-row">
         <div class="form-group col-md-6">
-            <label for="inputPrecio">Precio</label>
-            <input @bind-value="precio" type="number" step="0.01" class="form-control" id="inputPrecio" placeholder="1000" required>
+            <label for="inputPrecio">Precio en colones</label>
+            <input @bind-value="precio" type="number" class="form-control" id="inputPrecio" step="1" min="1" required>
         </div>
         <div class="form-group col-md-6">
             <label for="inputCantidad">Cantidad</label>
-            <input @bind-value="cantidad" type="number" class="form-control" id="inputCantidad" placeholder="50" required>
+            <input @bind-value="cantidad" type="number" class="form-control" id="inputCantidad"  min="1" step="1"  required>
         </div>
     </div>
     @if (plu != 0 && peso != 0)
@@ -39,21 +39,21 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="inputPlu">PLU</label>
-                <input @bind-value="plu" type="number" class="form-control" id="inputPlu" placeholder="1000" min="1" required>
+                <input @bind-value="plu" type="number" class="form-control" id="inputPlu" placeholder="1000" step="1" min="1" required>
             </div>
             <div class="form-group col-md-6">
                 <label for="inputPeso">Peso</label>
-                <input @bind-value="peso" type="number" class="form-control" step="1.01" id="inputPeso" placeholder="50" min="1" required>
+                <input @bind-value="peso" type="number" class="form-control" id="inputPeso" placeholder="50" step="1" min="1" required>
             </div>
         </div>
     }
     @if (!string.IsNullOrWhiteSpace(descripcion))
     {
-        <button @onclick="modificarProducto" type="submit" class="btn btn-primary">Crear</button>
+        <button @onclick="modificarProducto" type="submit" class="btn btn-primary">Modificar</button>
     }
     else
     {
-        <button @onclick="modificarProducto" type="submit" class="btn btn-primary" disabled>Crear</button>
+        <button @onclick="modificarProducto" type="submit" class="btn btn-primary" disabled>Modificar</button>
     }
 </form>
 
@@ -91,8 +91,11 @@
     {
         Producto p = new Producto(id, idArea, ean, descripcion, precio, cantidad);
         CRUD crud = new CRUD();
-        crud.actualizarProducto(p);
-        if (plu != 0 && peso != 0)
+        if (ean != 0)
+        {
+            crud.actualizarProducto(p);
+        }
+        if (plu != 0 && peso != 0 && ean != 0)
         {
             ProductoFresco f = new ProductoFresco(p, 0, plu, peso);
             crud.actualizarProductoFresco(f);
