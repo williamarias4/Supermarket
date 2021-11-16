@@ -1,0 +1,104 @@
+﻿@page "/CompraProductos"
+
+@using Supermercado.DAO;
+@using Supermercado.Data;
+
+@inject NavigationManager NavigationManager
+
+<div class="container">
+    <h3>Productos</h3>
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">Descripcion</th>
+                        <th scope="col">Precio</th>
+                        <th scope="col">Cantidad</th>
+                        <th></th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                     @foreach(var producto in init())
+                     {
+                        <tr>
+                    
+                            <td> @producto.descripcion </td>
+                            <td> @producto.precio </td>
+                            <td>@producto.cantidad
+                                <button class="btn btn-warning" @onclick="() =>sumarCantidad(producto.cantidad)">+</button>
+                                <button class="btn btn-warning" @onclick="() =>restarCantidad()">-</button>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-primary" @onclick="() => mostrarFactura(producto.descripcion, producto.precio, producto.cantidad)">Añadir</button>
+                            </td>
+                        </tr>
+                     }
+                </tbody>
+            </table>
+        </div>
+    </div>
+ </div>
+    <div>
+        <h4>Carrito de compras</h4>
+        <table>
+            @foreach(var element in l)
+            {
+            <tr>
+                <td>@element</td>
+                
+            </tr>
+      
+            }
+            
+             <tr>
+                 <td>
+                     <button type="button" class="btn btn-success" @*@onclick="() => facturar()"*@>Facturar</button>
+                 </td>
+             </tr>  
+           
+        </table>
+    </div>
+
+@code {
+
+    private string descripcion = "Frijoles";
+    private int precio = 1300;
+    private int can = 0;
+    List<string> l = new List<string>();
+
+    private List<Producto> init()
+    {
+        List<Producto> lista = new List<Producto>();
+
+        Producto p = new Producto(1, 1, 1, "Frijoles", 1300, 0);
+        Producto p2 = new Producto(2, 2, 2, "Arroz", 1200, 0);
+        Producto p3 = new Producto(3, 3, 3, "Leche", 800, 0);
+
+        lista.Add(p);
+        lista.Add(p2);
+        lista.Add(p3);
+
+        return lista;
+    }
+
+    private void mostrarFactura(string d, float p, int c)
+    {
+        l.Add("Descripcion: " + d);
+        l.Add("Precio: " +  p);
+        l.Add("Cantidad: " + c);
+        l.Add("+-----------------------------------------+");
+    }
+    private void sumarCantidad(int c)
+    {
+        c++;
+    }
+    private void restarCantidad()
+    {
+        if (can > 0)
+        {
+            can--;
+        }
+    }
+}
