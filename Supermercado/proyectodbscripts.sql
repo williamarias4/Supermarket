@@ -89,3 +89,66 @@ begin
   delete from SUPER.area where  pk_idarea = p_pk_idarea;
   commit;
 end eliminar_area_sp;
+
+create or replace  procedure seleccionar_productos
+(
+result OUT SYS_REFCURSOR
+)
+as
+begin
+    OPEN result FOR
+	select pk_idproducto, fk_idarea, ean, descripcion, precio, cantidad
+    from producto order by 1 DESC;
+end seleccionar_productos;
+
+create or replace  procedure seleccionar_productosfrescos
+(
+result OUT SYS_REFCURSOR
+)
+as
+begin
+    OPEN result FOR
+	select p.pk_idproducto, p.fk_idarea, p.ean, p.descripcion, p.precio, p.cantidad, f.plu, f.peso  
+    from producto p, productofresco f where p.pk_idproducto = f.fk_idproducto;
+end seleccionar_productosfrescos;
+
+create or replace  procedure seleccionar_productoporid
+(
+result OUT SYS_REFCURSOR, p_pk_idproducto in number
+)
+as
+begin
+    OPEN result FOR
+	select producto.fk_idarea, producto.ean, producto.descripcion, producto.precio, producto.cantidad  
+    from SUPER.producto where producto.pk_idproducto = p_pk_idproducto;
+end seleccionar_productoporid;
+
+create or replace  procedure seleccionar_productofrescoporid
+(
+result OUT SYS_REFCURSOR, p_pk_idproducto in number
+)
+as
+begin
+    OPEN result FOR
+	select pk_idproductofresco, fk_idproducto, PLU, peso from productofresco where fk_idproducto = p_pk_idproducto;
+end seleccionar_productofrescoporid;
+
+create or replace  procedure seleccionar_areaporid
+(
+result OUT SYS_REFCURSOR, p_pk_idarea in number
+)
+as
+begin
+    OPEN result FOR
+	select area.descripcion from SUPER.area where area.pk_idarea=p_pk_idarea;
+end seleccionar_areaporid;
+
+create or replace  procedure seleccionar_areas
+(
+result OUT SYS_REFCURSOR
+)
+as
+begin
+    OPEN result FOR
+	select pk_idarea, descripcion from area;
+end seleccionar_areas;

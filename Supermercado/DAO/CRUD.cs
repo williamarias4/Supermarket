@@ -77,40 +77,41 @@ namespace Supermercado.DAO
 
         public List<ProductoFresco> listarProductosFrescos()
         {
+            DataSet ds = new DataSet();
+            List<ProductoFresco> p = new List<ProductoFresco>();
             try
             {
-                List<ProductoFresco> productos = new List<ProductoFresco>();
-                OracleConnection connectionString = GetConnection();
-                string sql = "select p.pk_idproducto, p.fk_idarea, p.ean, p.descripcion, p.precio, p.cantidad, f.plu, f.peso  from producto p, productofresco f where p.pk_idproducto = f.fk_idproducto";
-                OracleConnection connection = connectionString;
+                OracleConnection connection = GetConnection();
                 connection.Open();
-                OracleCommand cmd = connection.CreateCommand();
-                cmd.CommandText = sql;
-                OracleDataReader dr = cmd.ExecuteReader();
-                if (dr.HasRows)
+                if (connection.State == System.Data.ConnectionState.Open)
                 {
-                    while (dr.Read())
-                    {
-                        ProductoFresco p = new ProductoFresco();
-                        p.id = dr.GetInt32(0);
-                        p.idArea = dr.GetInt32(1);
-                        p.ean = dr.GetInt64(2);
-                        p.descripcion = dr.GetString(3);
-                        p.precio = dr.GetFloat(4);
-                        p.cantidad = dr.GetInt32(5);
-                        p.PLU = dr.GetInt32(6);
-                        p.Peso = dr.GetFloat(7);
-                        productos.Add(p);
-                    }
+                    OracleCommand cmd = new OracleCommand();
+                    cmd.Connection = connection;
+                    cmd.CommandText = "seleccionar_productosfrescos";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add("result", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+                    cmd.ExecuteNonQuery();
+                    connection.Close();
+                    OracleDataAdapter da = new OracleDataAdapter(cmd);
+                    da.Fill(ds);
                 }
-                connection.Close();
-                cmd.Dispose();
-                connection.Dispose();
-                return productos;
+                foreach (DataRow row in ds.Tables[0].Rows)
+                    p.Add(new ProductoFresco()
+                    {
+                        id = Int32.Parse(row["PK_IDPRODUCTO"].ToString()),
+                        idArea = Int32.Parse(row["FK_IDAREA"].ToString()),
+                        ean = Int32.Parse(row["EAN"].ToString()),
+                        descripcion = row["DESCRIPCION"].ToString(),
+                        precio = Int64.Parse(row["PRECIO"].ToString()),
+                        cantidad = Int32.Parse(row["CANTIDAD"].ToString()),
+                        PLU = Int32.Parse(row["PLU"].ToString()),
+                        Peso = Int64.Parse(row["PESO"].ToString())
+                    });
+                return p;
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                return null;
+                throw e;
             }
         }
 
@@ -179,144 +180,154 @@ namespace Supermercado.DAO
 
         public List<Producto> listarProductos()
         {
+            DataSet ds = new DataSet();
+            List<Producto> p = new List<Producto>();
             try
             {
-                List<Producto> productos = new List<Producto>();
-                OracleConnection connectionString = GetConnection();
-                string sql = "select producto.pk_idproducto, producto.fk_idarea, producto.ean, producto.descripcion, producto.precio, producto.cantidad from SUPER.producto order by 1 DESC";
-                OracleConnection connection = connectionString;
+                OracleConnection connection = GetConnection();
                 connection.Open();
-                OracleCommand cmd = connection.CreateCommand();
-                cmd.CommandText = sql;
-                OracleDataReader dr = cmd.ExecuteReader();
-                if(dr.HasRows)
+                if (connection.State == System.Data.ConnectionState.Open)
                 {
-                    while (dr.Read())
-                    {
-                        Producto p = new Producto();
-                        p.id = dr.GetInt32(0);
-                        p.idArea = dr.GetInt32(1);
-                        p.ean = dr.GetInt64(2);
-                        p.descripcion = dr.GetString(3);
-                        p.precio = dr.GetFloat(4);
-                        p.cantidad = dr.GetInt32(5);
-                        productos.Add(p);
-                    }
+                    OracleCommand cmd = new OracleCommand();
+                    cmd.Connection = connection;
+                    cmd.CommandText = "seleccionar_productos";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add("result", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+                    cmd.ExecuteNonQuery();
+                    connection.Close();
+                    OracleDataAdapter da = new OracleDataAdapter(cmd);
+                    da.Fill(ds);
                 }
-                connection.Close();
-                cmd.Dispose();
-                connection.Dispose();
-                return productos;
+                foreach (DataRow row in ds.Tables[0].Rows)
+                    p.Add(new Producto()
+                    {
+                        id = Int32.Parse(row["PK_IDPRODUCTO"].ToString()),
+                        idArea = Int32.Parse(row["FK_IDAREA"].ToString()),
+                        ean = Int32.Parse(row["EAN"].ToString()),
+                        descripcion = row["DESCRIPCION"].ToString(),
+                        precio = Int64.Parse(row["PRECIO"].ToString()),
+                        cantidad = Int32.Parse(row["CANTIDAD"].ToString())
+                    });
+                return p;
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                return null;
+                throw e;
             }
         }
 
         public Producto productoPorId(int id)
         {
+            Producto p = new Producto();
             try
             {
-                Producto p = new Producto();
-                OracleConnection connectionString = GetConnection();
-                string sql = "select producto.fk_idarea, producto.ean, producto.descripcion, producto.precio, producto.cantidad  from SUPER.producto where producto.pk_idproducto=:id";
-                OracleConnection connection = connectionString;
+                OracleConnection connection = GetConnection();
                 connection.Open();
-                OracleCommand cmd = connection.CreateCommand();
-                cmd.CommandType = System.Data.CommandType.Text;
-                cmd.CommandText = sql;
-                cmd.Parameters.Add("id", OracleDbType.Int32).Value = id;
-                cmd.ExecuteNonQuery();
-                OracleDataReader dr = cmd.ExecuteReader();
-                if (dr.HasRows)
+                if (connection.State == System.Data.ConnectionState.Open)
                 {
-                    while (dr.Read())
+                    OracleCommand cmd = new OracleCommand();
+                    cmd.Connection = connection;
+                    cmd.CommandText = "seleccionar_productoporid";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add("result", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add("id", OracleDbType.Int32).Value = id;
+                    cmd.ExecuteNonQuery();
+                    OracleDataReader dr = cmd.ExecuteReader();
+                    if (dr.HasRows)
                     {
-                        p.idArea = dr.GetInt32(0);
-                        p.ean = dr.GetInt64(1);
-                        p.descripcion = dr.GetString(2);
-                        p.precio = dr.GetFloat(3);
-                        p.cantidad = dr.GetInt32(4);
+                        while (dr.Read())
+                        {
+                            p.idArea = dr.GetInt32(0);
+                            p.ean = dr.GetInt64(1);
+                            p.descripcion = dr.GetString(2);
+                            p.precio = dr.GetFloat(3);
+                            p.cantidad = dr.GetInt32(4);
+                        }
                     }
+                    connection.Close();
+                    cmd.Dispose();
+                    connection.Dispose();
                 }
-                connection.Close();
-                cmd.Dispose();
-                connection.Dispose();
                 return p;
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                return null;
+                throw e;
             }
         }
 
         public Area areaPorId(int id)
         {
+            Area a = new Area();
             try
             {
-                Area a = new Area();
-                OracleConnection connectionString = GetConnection();
-                string sql = "select area.descripcion from SUPER.area where area.pk_idarea=:id";
-                OracleConnection connection = connectionString;
+                OracleConnection connection = GetConnection();
                 connection.Open();
-                OracleCommand cmd = connection.CreateCommand();
-                cmd.CommandType = System.Data.CommandType.Text;
-                cmd.CommandText = sql;
-                cmd.Parameters.Add("id", OracleDbType.Int32).Value = id;
-                cmd.ExecuteNonQuery();
-                OracleDataReader dr = cmd.ExecuteReader();
-                if (dr.HasRows)
+                if (connection.State == System.Data.ConnectionState.Open)
                 {
-                    while (dr.Read())
+                    OracleCommand cmd = new OracleCommand();
+                    cmd.Connection = connection;
+                    cmd.CommandText = "seleccionar_areaporid";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add("result", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add("id", OracleDbType.Int32).Value = id;
+                    cmd.ExecuteNonQuery();
+                    OracleDataReader dr = cmd.ExecuteReader();
+                    if (dr.HasRows)
                     {
-                        a.descripcion = dr.GetString(0);
+                        while (dr.Read())
+                        {
+                            a.descripcion = dr.GetString(0);
+                        }
                     }
+                    connection.Close();
+                    cmd.Dispose();
+                    connection.Dispose();
                 }
-                connection.Close();
-                cmd.Dispose();
-                connection.Dispose();
                 return a;
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                return null;
+                throw e;
             }
         }
 
         public ProductoFresco productoFrescoPorId(int id)
         {
+            ProductoFresco p = new ProductoFresco();
             try
             {
-                ProductoFresco f = new ProductoFresco();
-                OracleConnection connectionString = GetConnection();
-                string sql = "select pk_idproductofresco, fk_idproducto, PLU, peso from productofresco where fk_idproducto = :id";
-                OracleConnection connection = connectionString;
+                OracleConnection connection = GetConnection();
                 connection.Open();
-                OracleCommand cmd = connection.CreateCommand();
-                cmd.CommandType = System.Data.CommandType.Text;
-                cmd.CommandText = sql;
-                cmd.Parameters.Add("id", OracleDbType.Int32).Value = id;
-                cmd.ExecuteNonQuery();
-                OracleDataReader dr = cmd.ExecuteReader();
-                if (dr.HasRows)
+                if (connection.State == System.Data.ConnectionState.Open)
                 {
-                    while (dr.Read())
+                    OracleCommand cmd = new OracleCommand();
+                    cmd.Connection = connection;
+                    cmd.CommandText = "seleccionar_productofrescoporid";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add("result", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add("id", OracleDbType.Int32).Value = id;
+                    cmd.ExecuteNonQuery();
+                    OracleDataReader dr = cmd.ExecuteReader();
+                    if (dr.HasRows)
                     {
-                        f.IdFresco = dr.GetInt32(0);
-                        f.id = dr.GetInt32(1);
-                        f.PLU = dr.GetInt32(2);
-                        f.Peso = dr.GetFloat(3);
+                        while (dr.Read())
+                        {
+                            p.IdFresco = dr.GetInt32(0);
+                            p.id = dr.GetInt32(1);
+                            p.PLU = dr.GetInt32(2);
+                            p.Peso = dr.GetFloat(3);
+                        }
                     }
+                    connection.Close();
+                    cmd.Dispose();
+                    connection.Dispose();
                 }
-                connection.Close();
-                cmd.Dispose();
-                connection.Dispose();
-                return f;
+                return p;
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                return null;
+                throw e;
             }
         }
 
@@ -588,68 +599,72 @@ namespace Supermercado.DAO
 
         public List<Area> listarAreas()
         {
+            DataSet ds = new DataSet();
+            List<Area> a = new List<Area>();
             try
             {
-                List<Area> a = new List<Area>();
-                OracleConnection connectionString = GetConnection();
-                string sql = "select pk_idarea, descripcion from area";
-                OracleConnection connection = connectionString;
+                OracleConnection connection = GetConnection();
                 connection.Open();
-                OracleCommand cmd = connection.CreateCommand();
-                cmd.CommandText = sql;
-                OracleDataReader dr = cmd.ExecuteReader();
-                if (dr.HasRows)
+                if (connection.State == System.Data.ConnectionState.Open)
                 {
-                    while (dr.Read())
-                    {
-                        Area area = new Area();
-                        area.idArea = dr.GetInt32(0);
-                        area.descripcion = dr.GetString(1);
-                        a.Add(area);
-                    }
+                    OracleCommand cmd = new OracleCommand();
+                    cmd.Connection = connection;
+                    cmd.CommandText = "seleccionar_areas";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add("result", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+                    cmd.ExecuteNonQuery();
+                    connection.Close();
+                    OracleDataAdapter da = new OracleDataAdapter(cmd);
+                    da.Fill(ds);
                 }
-                connection.Close();
-                cmd.Dispose();
-                connection.Dispose();
+                foreach (DataRow row in ds.Tables[0].Rows)
+                    a.Add(new Area()
+                    {
+                        idArea = Int32.Parse(row["PK_IDAREA"].ToString()),
+                        descripcion = row["DESCRIPCION"].ToString()
+                    });
                 return a;
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                return null;
+                throw e;
             }
         }
 
         public Area areaPorProducto(int idArea)
         {
+            Area a = new Area();
             try
             {
-                Area a = new Area();
-                OracleConnection connectionString = GetConnection();
-                string sql = "select pk_idarea, descripcion from area where pk_idarea = :idArea";
-                OracleConnection connection = connectionString;
+                OracleConnection connection = GetConnection();
                 connection.Open();
-                OracleCommand cmd = connection.CreateCommand();
-                cmd.CommandType = System.Data.CommandType.Text;
-                cmd.CommandText = sql;
-                cmd.Parameters.Add("idArea", OracleDbType.Int32).Value = idArea;
-                cmd.ExecuteNonQuery();
-                OracleDataReader dr = cmd.ExecuteReader();
-                if (dr.HasRows)
+                if (connection.State == System.Data.ConnectionState.Open)
                 {
-                    while (dr.Read())
+                    OracleCommand cmd = new OracleCommand();
+                    cmd.Connection = connection;
+                    cmd.CommandText = "seleccionar_areaporproducto";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add("result", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add("id", OracleDbType.Int32).Value = idArea;
+                    cmd.ExecuteNonQuery();
+                    OracleDataReader dr = cmd.ExecuteReader();
+                    if (dr.HasRows)
                     {
-                        a.idArea = dr.GetInt32(0);
-                        a.descripcion = dr.GetString(1);
+                        while (dr.Read())
+                        {
+                            a.idArea = Int32.Parse(dr.GetString(0));
+                            a.descripcion = dr.GetString(1);
+                        }
                     }
+                    connection.Close();
+                    cmd.Dispose();
+                    connection.Dispose();
                 }
-                connection.Close();
-                cmd.Dispose();
-                connection.Dispose();
                 return a;
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                return null;
+                throw e;
             }
         }
     }
