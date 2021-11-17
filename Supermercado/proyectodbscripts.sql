@@ -152,3 +152,13 @@ begin
     OPEN result FOR
 	select pk_idarea, descripcion from area;
 end seleccionar_areas;
+
+create or replace  procedure seleccionar_areaporproducto
+(
+result OUT SYS_REFCURSOR, p_pk_idarea in number
+)
+as
+begin
+    OPEN result FOR
+	select pk_idarea, descripcion from area where pk_idarea = p_pk_idarea;
+end seleccionar_areaporproducto;
