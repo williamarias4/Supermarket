@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Blazored.LocalStorage" Version="4.1.5" />
     <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="3.21.4" />
   </ItemGroup>
 
