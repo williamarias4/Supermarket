@@ -20,53 +20,79 @@
                     </tr>
                 </thead>
                 <tbody>
-                     @foreach(var producto in init())
-                     {
+                   
+                    @foreach (var producto in init())
+                        {
+                        
                         <tr>
-                    
-                            <td> @producto.descripcion </td>
-                            <td> @producto.precio </td>
-                            <td>@producto.cantidad
-                                <button class="btn btn-warning" @onclick="() =>sumarCantidad(producto.cantidad)">+</button>
-                                <button class="btn btn-warning" @onclick="() =>restarCantidad()">-</button>
-                            </td>
+
+                            <td>@producto.descripcion </td>
+                            <td>@producto.precio </td>
                             <td>
-                                <button type="button" class="btn btn-primary" @onclick="() => mostrarFactura(producto.descripcion, producto.precio, producto.cantidad)">Añadir</button>
+                                <select class="form-control" @bind="@cantidad">
+
+                                    <option value=""></option>
+                                    @foreach (var c in cantidades)
+                                    {
+                                        
+                                        <option value="@c"> @c </option>
+                                    }
+                                    
+
+                                </select>
+                            </td> 
+                            <td>
+                                <button type="button" class="btn btn-primary" @onclick="() => mostrarFactura(producto.descripcion, producto.precio, cantidad)">Añadir</button>
                             </td>
                         </tr>
-                     }
+                    }
                 </tbody>
             </table>
         </div>
     </div>
  </div>
-    <div>
-        <h4>Carrito de compras</h4>
-        <table>
-            @foreach(var element in l)
-            {
+<div>
+
+    <h4>Carrito de compras</h4>
+    <table>
+        @foreach (var element in l)
+        {
             <tr>
                 <td>@element</td>
-                
+
             </tr>
-      
-            }
-            
-             <tr>
-                 <td>
-                     <button type="button" class="btn btn-success" @*@onclick="() => facturar()"*@>Facturar</button>
-                 </td>
-             </tr>  
-           
-        </table>
-    </div>
+        }
+
+        <tr>
+            <td>
+                <button type="button" class="btn btn-success" @*@onclick="() => facturar()" *@>Facturar</button>
+            </td>
+        </tr>
+
+    </table>
+</div>
 
 @code {
 
-    private string descripcion = "Frijoles";
-    private int precio = 1300;
-    private int can = 0;
+    //lista de prodcutos para la visualizacion del carrito
     List<string> l = new List<string>();
+
+    //lista de cantidades para la compra de productos
+    List<int> cantidades = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+    int cantidad;
+
+    int Cantidad
+    {
+        get => cantidad;
+        set
+        {
+            cantidad = value;
+
+        }
+    }
+
+
 
     private List<Producto> init()
     {
@@ -90,15 +116,5 @@
         l.Add("Cantidad: " + c);
         l.Add("+-----------------------------------------+");
     }
-    private void sumarCantidad(int c)
-    {
-        c++;
-    }
-    private void restarCantidad()
-    {
-        if (can > 0)
-        {
-            can--;
-        }
-    }
+    
 }

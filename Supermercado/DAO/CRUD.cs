@@ -146,7 +146,7 @@ namespace Supermercado.DAO
         {
             Usuario user = new Usuario();
             OracleConnection connectionString = GetConnection();
-            string sql = "select pk_idusuario,fk_idrol,nombreusuario,contrasena,nombre,apellido1,apellido2 from SUPER.usuario where nombreusuario =:usern and contrasena =: pass";
+            //string sql = "select pk_idusuario,fk_idrol,nombreusuario,contrasena,nombre,apellido1,apellido2 from SUPER.usuario where nombreusuario =: " + username + " and contrasena =: " + password;
             //string sql = "select verificar_usuario_sp('"+username+"','"+ password+"')"+" from dual";
             OracleConnection connection = connectionString;
             connection.Open();
