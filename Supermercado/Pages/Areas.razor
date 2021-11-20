@@ -40,6 +40,7 @@
     private List<Area> listarAreas()
     {
         CRUD crud = new CRUD();
+        crud.agregarLogMovimiento(userSessionValue.IdUsuario, userSessionValue.NombreUsuario, "AREA", "SELECT", "LISTAR AREAS");
         return crud.listarAreas();
     }
 
@@ -52,5 +53,6 @@
     {
         CRUD crud = new CRUD();
         crud.eliminarArea(id);
+        crud.agregarLogMovimiento(userSessionValue.IdUsuario, userSessionValue.NombreUsuario, "AREA", "DELETE", "ELIMINAR AREA");
     }
 }

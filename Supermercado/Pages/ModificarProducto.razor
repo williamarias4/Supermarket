@@ -75,6 +75,9 @@
         CRUD crud = new CRUD();
         p = crud.productoPorId(id);
         f = crud.productoFrescoPorId(id);
+
+        crud.agregarLogMovimiento(userSessionValue.IdUsuario, userSessionValue.NombreUsuario, "PRODUCTO", "SELECT", "SELECCIONAR PRODUCTO");
+        crud.agregarLogMovimiento(userSessionValue.IdUsuario, userSessionValue.NombreUsuario, "PRODUCTOFRESCO", "SELECT", "SELECCIONAR INFORMACION FRESCO");
         idArea = p.idArea;
         ean = p.ean;
         descripcion = p.descripcion;
@@ -94,10 +97,12 @@
         if (ean != 0)
         {
             crud.actualizarProducto(p);
+            crud.agregarLogMovimiento(userSessionValue.IdUsuario, userSessionValue.NombreUsuario, "PRODUCTO", "UPDATE", "ACTUALIZAR PRODUCTO");
         }
         if (plu != 0 && peso != 0 && ean != 0)
         {
             ProductoFresco f = new ProductoFresco(p, 0, plu, peso);
+            crud.agregarLogMovimiento(userSessionValue.IdUsuario, userSessionValue.NombreUsuario, "PRODUCTOFRESCO", "UPDATE", "ACTUALIZAR INFORMACION FRESCO");
             crud.actualizarProductoFresco(f);
         }
     }
@@ -105,6 +110,7 @@
     private List<Area> listarAreas()
     {
         CRUD crud = new CRUD();
+        crud.agregarLogMovimiento(userSessionValue.IdUsuario, userSessionValue.NombreUsuario, "AREA", "SELECT", "SELECCIONAR AREAS");
         return crud.listarAreas();
     }
 

@@ -27,5 +27,6 @@
         Area a = new Area(0, descripcion);
         CRUD crud = new CRUD();
         crud.insertarArea(a);
+        crud.agregarLogMovimiento(userSessionValue.IdUsuario, userSessionValue.NombreUsuario, "AREA", "INSERT", "INSERTAR AREA");
     }
 }

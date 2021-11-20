@@ -142,7 +142,9 @@
             CRUD crud = new CRUD();
             crud.agregarLogCajero(factura);
             crud.agregarLogFactura(factura);
-
+            crud.agregarLogMovimiento(userSessionValue.IdUsuario, userSessionValue.NombreUsuario, "BITACORACAJERO", "INSERT", "INSERTAR VENTA");
+            crud.agregarLogMovimiento(userSessionValue.IdUsuario, userSessionValue.NombreUsuario, "BITACORAFACTURA", "INSERT", "INSERTAR VENTA");
+            crud.agregarLogMovimiento(userSessionValue.IdUsuario, userSessionValue.NombreUsuario, "PRODUCTO", "UPDATE", "ACTUALIZAR CANTIDADES");
 
             //reiniciar los valores con lo mas actual
             iniciarFactura();

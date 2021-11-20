@@ -93,6 +93,8 @@
         CRUD crud = new CRUD();
         p = crud.listarProductos();
         f = crud.listarProductosFrescos();
+        crud.agregarLogMovimiento(userSessionValue.IdUsuario, userSessionValue.NombreUsuario, "PRODUCTO", "SELECT", "INSERTAR PRODUCTO");
+        crud.agregarLogMovimiento(userSessionValue.IdUsuario, userSessionValue.NombreUsuario, "PRODUCTOFRESCO", "SELECT", "INSERTAR INFORMACION FRESCO");
         for (int i = 0; i < p.Count; i++)
         {
             for (int j = 0; j < f.Count; j++)
@@ -133,12 +135,14 @@
     {
         CRUD crud = new CRUD();
         crud.eliminarProducto(id);
+        crud.agregarLogMovimiento(userSessionValue.IdUsuario, userSessionValue.NombreUsuario, "PRODUCTO", "DELETE", "ELIMINAR PRODUCTO");
     }
 
     private void eliminarProductoFresco(int id)
     {
         CRUD crud = new CRUD();
         crud.eliminarProductoFresco(id);
+        crud.agregarLogMovimiento(userSessionValue.IdUsuario, userSessionValue.NombreUsuario, "PRODUCTOFRESCO", "DELETE", "ELIMINAR INFORMACION FRESCO");
         eliminarProducto(id);
     }
 
@@ -146,6 +150,7 @@
     {
         CRUD crud = new CRUD();
         string a = crud.areaPorProducto(id).descripcion;
+        crud.agregarLogMovimiento(userSessionValue.IdUsuario, userSessionValue.NombreUsuario, "AREA", "SELECT", "SELECCIONAR AREAS POR ID");
         return a;
     }
 

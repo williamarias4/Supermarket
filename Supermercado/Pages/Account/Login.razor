@@ -48,10 +48,12 @@
 
             user = crud.validateCredentials(username, password);
 
+
             if (user.IdUsuario != 0)
             {
                 Message = "";
                 SaveSession();
+                crud.agregarLogMovimiento(user.IdUsuario, user.NombreUsuario, "USUARIO", "SELECT", "INICIO SESION");
                 NavigationManager.NavigateTo("/", forceLoad: true);
             }
             else

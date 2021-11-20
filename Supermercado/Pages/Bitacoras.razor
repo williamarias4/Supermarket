@@ -138,6 +138,7 @@
     {
         List<LogMovimiento> p = new List<LogMovimiento>();
         CRUD crud = new CRUD();
+        crud.agregarLogMovimiento(userSessionValue.IdUsuario, userSessionValue.NombreUsuario, "BITACORAMOVIMIENTOS", "SELECT", "CONSULTAR LOGS");
         p = crud.logsMovimientos();
         return p;
     }
@@ -146,6 +147,7 @@
     {
         List<LogFactura> p = new List<LogFactura>();
         CRUD crud = new CRUD();
+        crud.agregarLogMovimiento(userSessionValue.IdUsuario, userSessionValue.NombreUsuario, "BITACORAFACTURA", "SELECT", "CONSULTAR LOGS");
         p = crud.logsFactura();
         return p;
     }
@@ -154,6 +156,7 @@
     {
         List<LogCajero> p = new List<LogCajero>();
         CRUD crud = new CRUD();
+        crud.agregarLogMovimiento(userSessionValue.IdUsuario, userSessionValue.NombreUsuario, "BITACORACAJERO", "SELECT", "CONSULTAR LOGS");
         p = crud.logsCajero();
         return p;
     }

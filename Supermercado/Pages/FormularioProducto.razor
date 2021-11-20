@@ -93,10 +93,13 @@
                 colaProductos.Enqueue(item);
             }
             crud.insertarProductoFresco(new ProductoFresco(colaProductos.Dequeue(), 0, PLU, peso));
+            crud.agregarLogMovimiento(userSessionValue.IdUsuario, userSessionValue.NombreUsuario, "PRODUCTO", "INSERT", "INSERTAR PRODUCTO");
+            crud.agregarLogMovimiento(userSessionValue.IdUsuario, userSessionValue.NombreUsuario, "PRODUCTOFRESCO", "INSERT", "INSERTAR INFORMACION FRESCO");
         }
         if (!esFresco)
         {
             crud.insertarProducto(p);
+            crud.agregarLogMovimiento(userSessionValue.IdUsuario, userSessionValue.NombreUsuario, "PRODUCTO", "INSERT", "INSERTAR PRODUCTO");
         }
     }
 
@@ -113,6 +116,7 @@
     private List<Area> listarAreas()
     {
         CRUD crud = new CRUD();
+        crud.agregarLogMovimiento(userSessionValue.IdUsuario, userSessionValue.NombreUsuario, "AREA", "SELECT", "SELECCIONAR AREAS");
         return crud.listarAreas();
     }
 }
