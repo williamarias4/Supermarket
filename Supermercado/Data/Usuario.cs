@@ -15,6 +15,9 @@ namespace Supermercado.Data
         public string Nombre { get; set; }
         public string Apellido1 { get; set; }
         public string Apellido2 { get; set; }
+        public string Caja { get; set; }
+
+        public string Area { get; set; }
 
         public string CreateMD5(string input)
         {

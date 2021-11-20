@@ -157,45 +157,45 @@ namespace Supermercado.DAO
         public Usuario validateCredentials(string username, string password)
         {
             Usuario user = new Usuario();
+            OracleConnection connectionString = GetConnection();
             try
             {
+                DataSet ds = new DataSet();
                 OracleConnection connection = GetConnection();
                 connection.Open();
-                if (connection.State == System.Data.ConnectionState.Open)
+                OracleCommand cmd = new OracleCommand();
+                cmd.Connection = connection;
+                cmd.CommandText = "login_sp";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("p_nombreUsuario", OracleDbType.Varchar2).Value = username;
+                cmd.Parameters.Add("p_contrasena", OracleDbType.Varchar2).Value = user.CreateMD5(password);
+                cmd.Parameters.Add("result", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+                cmd.ExecuteNonQuery();
+                connection.Close();
+                OracleDataAdapter da = new OracleDataAdapter(cmd);
+                da.Fill(ds);
+                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
                 {
-                    OracleCommand cmd = new OracleCommand();
-                    cmd.Connection = connection;
-                    cmd.CommandText = "seleccionar_usuarioporcredenciales_sp";
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.Add("result", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
-                    cmd.Parameters.Add("p_nombreusuario", OracleDbType.Varchar2).Value = username;
-                    cmd.Parameters.Add("p_contrasena", OracleDbType.Varchar2).Value = user.CreateMD5(password);
-                    cmd.ExecuteNonQuery();
-                    OracleDataReader dr = cmd.ExecuteReader();
-                    if (dr.HasRows)
-                    {
-                        while (dr.Read())
-                        {
-                            user.IdUsuario = dr.GetInt32(0);
-                            Rol rol = buscarRol(dr.GetInt32(1));
-                            user.Rol = rol;
-                            user.NombreUsuario = username;
-                            user.Contrasena = password;
-                            user.Nombre = dr.GetString(4);
-                            user.Apellido1 = dr.GetString(5);
-                            user.Apellido2 = dr.GetString(6);
-                        }
-                    }
-                    connection.Close();
-                    cmd.Dispose();
-                    connection.Dispose();
+                    user.IdUsuario = Int32.Parse(ds.Tables[0].Rows[0]["PK_IDUSUARIO"].ToString());
+                    Rol rol = buscarRol(Int32.Parse(ds.Tables[0].Rows[0]["PK_IDROL"].ToString()));
+                    user.Rol = rol;
+                    user.Nombre = ds.Tables[0].Rows[0]["NOMBRE"].ToString();
+                    user.Apellido1 = ds.Tables[0].Rows[0]["APELLIDO1"].ToString();
+                    user.Apellido2 = ds.Tables[0].Rows[0]["APELLIDO2"].ToString();
+                    user.NombreUsuario = ds.Tables[0].Rows[0]["NOMBREUSUARIO"].ToString();
+                    user.Contrasena = password;
+                    user.Caja = ds.Tables[0].Rows[0]["NUMEROCAJA"].ToString();
+                    user.Area = ds.Tables[0].Rows[0]["AREA"].ToString();
+
                 }
-                return user;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                throw e;
+
+                
             }
+            
+            return user;
         }
 
         public List<Producto> listarProductos()
