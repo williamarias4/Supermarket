@@ -1,52 +1,105 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
+﻿@inject Blazored.LocalStorage.ILocalStorageService iLocalStorage
+@inject NavigationManager NavigationManager
+@using Supermercado.Data
+
+<div class="top-row pl-4 navbar navbar-dark">
     <a class="navbar-brand" href="">Supermercado</a>
     <button class="navbar-toggler" @onclick="ToggleNavMenu">
         <span class="navbar-toggler-icon"></span>
     </button>
 </div>
 
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+@if(userSessionValue == null)
+{ <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
     <ul class="nav flex-column">
         <li class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
                 <span class="oi oi-home" aria-hidden="true"></span> Principal
             </NavLink>
         </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Counter
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="areas">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Area
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="productos">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Producto
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="CompraProductos">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Compra Productos
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="Bitacoras">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Bitacoras
-            </NavLink>
-        </li>
     </ul>
 </div>
+    NavigationManager.NavigateTo("login");
+}
+else if (userSessionValue.Rol != null && userSessionValue.Rol.IdRol == 2)
+{
+    <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+        <ul class="nav flex-column">
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                    <span class="oi oi-home" aria-hidden="true"></span> Principal
+                </NavLink>
+            </li>
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="counter">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span> Counter
+                </NavLink>
+            </li>
+
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="areas">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span> Area
+                </NavLink>
+            </li>
+
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="productos">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span> Producto
+                </NavLink>
+            </li>
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="CompraProductos">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span> Compra Productos
+                </NavLink>
+            </li>
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="Bitacoras">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span> Bitacoras
+                </NavLink>
+            </li>
+        </ul>
+    </div>
+}
+else if (userSessionValue.Rol != null && userSessionValue.Rol.IdRol == 1)
+{<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+        <ul class="nav flex-column">
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                    <span class="oi oi-home" aria-hidden="true"></span> Principal
+                </NavLink>
+            </li>
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="productos">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span> Producto
+                </NavLink>
+            </li>
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="CompraProductos">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span> Compra Productos
+                </NavLink>
+            </li>
+        </ul>
+    </div>
+    //NavigationManager.NavigateTo("login");
+}
+
 
 @code {
     private bool collapseNavMenu = true;
 
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
+    Usuario userSessionValue = new Usuario();
+
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
     }
+
+    protected override async Task OnInitializedAsync()
+    {
+        userSessionValue = await iLocalStorage.GetItemAsync<Usuario>("SessionValue");
+
+    }
+    
 }

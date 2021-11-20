@@ -1,9 +1,28 @@
 ﻿@page "/"
 @inject Blazored.LocalStorage.ILocalStorageService iLocalStorage
+@using Supermercado.Data
+
+
 
 <h1>Sistema de Inventario de Supermercado</h1>
 
+@if (userSessionValue == null)
+{
+    <h2>Inicia sesion para continuar.</h2> }
+else
+{ <h3>
+        Bienvenido @userSessionValue.Nombre
+    </h3>}
 
-Welcome to your new app.
 
 <SurveyPrompt Title="How is Blazor working for you?" />
+
+
+@code{
+    Usuario userSessionValue = new Usuario();
+    protected override async Task OnInitializedAsync()
+    {
+        userSessionValue = await iLocalStorage.GetItemAsync<Usuario>("SessionValue");
+
+    }
+}

@@ -4,6 +4,7 @@
 @using Supermercado.Data;
 
 @inject NavigationManager NavigationManager
+@inject Blazored.LocalStorage.ILocalStorageService iLocalStorage
 
 <div class="container">
     <h3>Productos</h3>
@@ -64,12 +65,20 @@
             </table>
         </div>
     </div>
-    <NavLink href="formularioProducto">
-        <button class="btn btn-primary">Crear producto</button>
-    </NavLink>
+    @if (userSessionValue.Rol == null)
+    {
+        
+    }
+    else if (userSessionValue.Rol.IdRol == 3)
+    {<NavLink href="formularioProducto">
+            <button class="btn btn-primary">Crear producto</button>
+        </NavLink>
+    }
+    else { }
 </div>
 
 @code {
+    Usuario userSessionValue = new Usuario();
     private List<ProductoFresco> listarProductos()
     {
         //Hago la lista de productos
@@ -101,12 +110,12 @@
             {
                 if (i != x[z])
                 {
-                    aux.Add(new ProductoFresco(p[i],0,0,0));
+                    aux.Add(new ProductoFresco(p[i], 0, 0, 0));
                 }
                 else
                 {
                     aux.Add(f[z]);
-                    if (x[z]+1 < x.Count)
+                    if (x[z] + 1 < x.Count)
                     {
                         z++;
                     }
@@ -142,6 +151,13 @@
 
     private void enviarId(int id)
     {
-        NavigationManager.NavigateTo("modificarProducto/"+id, forceLoad: true);
+        NavigationManager.NavigateTo("modificarProducto/" + id, forceLoad: true);
     }
+
+    protected override async Task OnInitializedAsync()
+    {
+        userSessionValue = await iLocalStorage.GetItemAsync<Usuario>("SessionValue");
+
+    }
+
 }

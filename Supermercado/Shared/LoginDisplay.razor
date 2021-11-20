@@ -1,3 +1,31 @@
-﻿
-<a href="login">Log in</a>
+﻿@inject Blazored.LocalStorage.ILocalStorageService iLocalStorage
+@inject NavigationManager NavigationManager
 
+@using Supermercado.Data
+
+@if (userSessionValue == null)
+{
+    <a href="login">Iniciar Sesion</a>
+}
+else
+{
+<a href="/" >@userSessionValue.Nombre</a>
+<a @onclick="ClearSessionValue" href="/">Cerrar Sesion</a>
+}
+
+@code{
+    Usuario userSessionValue = new Usuario();
+    protected override async Task OnInitializedAsync()
+    {
+        userSessionValue = await iLocalStorage.GetItemAsync<Usuario>("SessionValue");
+
+    }
+
+    public async void ClearSessionValue()
+    {
+        userSessionValue = new Usuario();
+        await iLocalStorage.ClearAsync();
+        NavigationManager.NavigateTo("/", forceLoad: true);
+        StateHasChanged();
+    }
+}

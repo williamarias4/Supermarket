@@ -1,5 +1,7 @@
 ﻿@page "/counter"
+@inject Blazored.LocalStorage.ILocalStorageService iLocalStorage
 
+@using Supermercado.Data
 <h1>Counter</h1>
 
 <p>Current count: @currentCount</p>
@@ -8,13 +10,13 @@
 <button class="btn btn-primary" @onclick="Agregar">Click me</button>
 
 <table>
-        @foreach (var element in test)
-        {
+    @foreach (var element in test)
+    {
         <tr>
             <td>@element</td>
         </tr>
-        }
-    </table>
+    }
+</table>
 
 @code {
     private int currentCount = 0;
@@ -23,6 +25,15 @@
     private void IncrementCount()
     {
         currentCount++;
+    }
+
+    Usuario userSessionValue = new Usuario();
+    string message = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        userSessionValue = await iLocalStorage.GetItemAsync<Usuario>("SessionValue");
+        
     }
 
     private void Agregar()

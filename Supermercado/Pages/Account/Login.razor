@@ -8,23 +8,21 @@
 <div class="row">
     <div class="col-md-4">
         <section>
-            <form class="form-group">
-                <h4>Digite sus credenciales para iniciar sesion</h4>
-                <hr />
-                <div asp-validation-summary="All" class="text-danger"></div>
-                <div class="form-group">
-                    <label for="username">Nombre de Usuario</label>
-                    <input @bind="username" type="text" class="form-control" required />
+            <h4>Digite sus credenciales para iniciar sesion</h4>
+            <hr />
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label for="username">Nombre de Usuario</label>
+                <input @bind="username" type="text" class="form-control" required />
 
-                </div>
-                <div class="form-group">
-                    <label for="password">Contrasenia</label>
-                    <input @bind="password" type="password" class="form-control" required />
-                </div>
-                <div class="form-group">
-                    <button @onclick="iniciarSesion" type="submit" class="btn btn-primary">Iniciar Sesion</button>
-                </div>
-            </form>
+            </div>
+            <div class="form-group">
+                <label for="password">Contrasenia</label>
+                <input @bind="password" type="password" class="form-control" required />
+            </div>
+            <div class="form-group">
+                <button @onclick="iniciarSesion" class="btn btn-primary">Iniciar Sesion</button>
+            </div>
         </section>
     </div>
 </div>
@@ -37,26 +35,27 @@
     Usuario user = new Usuario();
     private string username;
     private string password;
+    Usuario userSessionValue = new Usuario();
+    string Message = "";
 
     private void iniciarSesion()
     {
         if (username != null && password != null)
         {
+
             CRUD crud = new CRUD();
+
             user = crud.validateCredentials(username, password);
-            if (user != null)
+
+            if (user.IdUsuario != 0)
             {
                 SaveSession();
-                NavigationManager.NavigateTo("/counter", forceLoad: true);
+                NavigationManager.NavigateTo("/", forceLoad: true);
             }
         }
-        else return;
-
+        else { return; }
 
     }
-
-    Usuario userSessionValue = new Usuario();
-    string Message = "";
 
     protected override async Task OnInitializedAsync()
     {
