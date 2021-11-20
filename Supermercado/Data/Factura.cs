@@ -13,7 +13,7 @@ namespace Supermercado.Data
         public int idUsuario { get; set; }
         public string nombreUsuario { get; set; }
         public string fecha { get; set; }
-        public List<DetalleFactura> detalle { get; set; }
+        public List<DetalleFactura> detalle = new List<DetalleFactura>();
 
 
     }
