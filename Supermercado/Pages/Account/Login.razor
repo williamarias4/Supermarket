@@ -54,12 +54,18 @@
                 SaveSession();
                 NavigationManager.NavigateTo("/", forceLoad: true);
             }
+            else
+            {
+                Message = "Se intentado conectar con un usuario que no existe en la BD. Favor validar credenciales antes de volverlo a intentar";
+                return;
+            }
         }
         else
         {
-            Message = "Se intentado conectar con un usuario que no existe en la BD. Favor validar credenciales antes de volverlo a intentar";
+            Message = "Favor llenar ambos campos";
             return;
         }
+
 
     }
 
