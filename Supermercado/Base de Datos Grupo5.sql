@@ -668,3 +668,139 @@ INSERT INTO PRODUCTOFRESCO (PK_IDPRODUCTOFRESCO, fk_idproducto, plu, peso) VALUE
 INSERT INTO PRODUCTOFRESCO (PK_IDPRODUCTOFRESCO, fk_idproducto, plu, peso) VALUES (2, 14, 22222, 100);
 INSERT INTO PRODUCTOFRESCO (PK_IDPRODUCTOFRESCO, fk_idproducto, plu, peso) VALUES (3, 15, 33333, 150);
 INSERT INTO PRODUCTOFRESCO (PK_IDPRODUCTOFRESCO, fk_idproducto, plu, peso) VALUES (4, 16, 44444, 175);
+
+create or replace  procedure login_sp
+(
+    p_nombreUsuario in VARCHAR2,
+    p_contrasena IN VARCHAR2,
+    result OUT SYS_REFCURSOR
+)
+as
+begin
+    OPEN result FOR
+	SELECT u.PK_IDUSUARIO PK_IDUSUARIO,
+        u.NOMBREUSUARIO NOMBREUSUARIO,
+        u.NOMBRE NOMBRE,
+        u.APELLIDO1 APELLIDO1,
+        u.APELLIDO2 APELLIDO2,
+        r.PK_IDROL PK_IDROL,
+        r.DESCRIPCION DESCRIPCIONROL,
+        c.NUMEROCAJA NUMEROCAJA,
+        a.PK_IDAREA AREA
+        FROM Usuario u
+        INNER JOIN ROL r ON r.pk_idrol = u.fk_idrol
+        LEFT JOIN CAJERO c ON c.fk_idusuario = u.pk_idusuario
+        LEFT JOIN GERENTEAREA g ON g.fk_idusuario = u.pk_idusuario
+        LEFT JOIN AREA a ON a.pk_idarea = g.fk_idarea
+        WHERE u.nombreusuario = p_nombreUsuario
+        AND u.contrasena = p_contrasena;
+end login_sp;
+/
+
+create or replace NONEDITIONABLE procedure insertar_bitacorafactura_sp 
+(
+p_pk_idbitacorafactura in number, 
+p_idfactura in number, 
+p_ean in number, 
+p_cantidad in number, 
+p_subtotal in number, 
+p_total in number,
+p_idusuario in number, 
+p_nombreusuario in varchar2, 
+p_fecha in date
+) as 
+
+begin
+  INSERT INTO SUPER.bitacorafactura (pk_idbitacorafactura, 
+										idfactura, 
+										ean, 
+										cantidad, 
+										subtotal, 
+										total, 
+										idusuario, 
+										nombreusuario, 
+										fecha)
+	VALUES
+	(p_pk_idbitacorafactura, p_idfactura, p_ean, p_cantidad, p_subtotal, p_total, p_idusuario, p_nombreusuario, p_fecha)
+
+	;
+  commit;
+end insertar_bitacorafactura_sp;
+/
+
+create or replace NONEDITIONABLE procedure seleccionar_bitacoraCajero
+(
+result OUT SYS_REFCURSOR
+)
+as
+begin
+    OPEN result FOR
+   	select PK_IDBITACORACAJERO ,
+            IDUSUARIO ,
+            NOMBREUSUARIO ,
+            NUMEROCAJA ,
+            IDFACTURA ,
+            FECHA 
+    from bitacoracajero;
+end seleccionar_bitacoraCajero;
+/
+
+create or replace NONEDITIONABLE procedure seleccionar_bitacoraFactura
+(
+result OUT SYS_REFCURSOR
+)
+as
+begin
+    OPEN result FOR
+		select PK_IDBITACORAFACTURA ,
+            IDFACTURA ,
+            EAN ,
+            CANTIDAD ,
+            SUBTOTAL ,
+            TOTAL ,
+            IDUSUARIO ,
+            NOMBREUSUARIO ,
+            FECHA 
+    from bitacorafactura;
+end seleccionar_bitacoraFactura;
+/
+
+create or replace NONEDITIONABLE procedure seleccionar_bitacoraMovimientos
+(
+result OUT SYS_REFCURSOR
+)
+as
+begin
+    OPEN result FOR
+    select pk_idbitacoramovimientos,
+    idusuario,
+    nombreusuario,
+    tabla,
+    tipotransaccion,
+    descripcion,
+    fecha
+    from bitacoramovimientos;
+end seleccionar_bitacoraMovimientos;
+/
+
+create or replace procedure actualizar_cantidad_producto_sp 
+(
+p_id in number, 
+p_cantidad in number 
+) as 
+begin
+  update SUPER.producto set cantidad = cantidad - p_cantidad
+  where PK_IDPRODUCTO = p_id;
+  commit;
+end actualizar_cantidad_producto_sp;
+/
+create or replace procedure actualizar_cantidad_producto_fresco_sp 
+(
+p_id in number, 
+p_peso in number 
+) as 
+begin
+  update SUPER.productofresco set peso = peso - p_peso
+  where FK_IDPRODUCTO = p_id;
+  commit;
+end actualizar_cantidad_producto_fresco_sp;
