@@ -649,8 +649,6 @@ namespace Supermercado.DAO
             {
                 string sproc = "actualizar_cantidad_producto_sp";
 
-                if (idArea == 4)
-                    sproc = "actualizar_cantidad_productofresco_sp";
                 OracleConnection connectionString = GetConnection();
                 OracleCommand cmd = new OracleCommand();
                 cmd.Connection = connectionString;
