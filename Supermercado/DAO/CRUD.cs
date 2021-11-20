@@ -5,6 +5,7 @@ using System.Data;
 using Supermercado.Data;
 using System.Data;
 using System.Linq;
+using System.Text;
 
 namespace Supermercado.DAO
 {
@@ -142,7 +143,6 @@ namespace Supermercado.DAO
             return rol;
         }
 
-
         public Usuario validateCredentials(string username, string password)
         {
             Usuario user = new Usuario();
@@ -161,7 +161,7 @@ namespace Supermercado.DAO
             {
                 while (dr.Read())
                 {
-                    
+
                     user.IdUsuario = dr.GetInt32(0);
                     Rol rol = buscarRol(dr.GetInt32(1));
                     user.Rol = rol;
@@ -203,11 +203,60 @@ namespace Supermercado.DAO
                     {
                         id = Int32.Parse(row["PK_IDPRODUCTO"].ToString()),
                         idArea = Int32.Parse(row["FK_IDAREA"].ToString()),
-                        ean = Int32.Parse(row["EAN"].ToString()),
+                        ean = Int64.Parse(row["EAN"].ToString()),
                         descripcion = row["DESCRIPCION"].ToString(),
                         precio = Int64.Parse(row["PRECIO"].ToString()),
                         cantidad = Int32.Parse(row["CANTIDAD"].ToString())
                     });
+                return p;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public List<Producto> listarProductosDisponibles()
+        {
+            DataSet ds = new DataSet();
+            List<Producto> p = new List<Producto>();
+            try
+            {
+                OracleConnection connection = GetConnection();
+                connection.Open();
+                if (connection.State == System.Data.ConnectionState.Open)
+                {
+                    OracleCommand cmd = new OracleCommand();
+                    cmd.Connection = connection;
+                    cmd.CommandText = "seleccionar_productos";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add("result", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+                    cmd.ExecuteNonQuery();
+                    connection.Close();
+                    OracleDataAdapter da = new OracleDataAdapter(cmd);
+                    da.Fill(ds);
+                }
+                foreach (DataRow row in ds.Tables[0].Rows)
+                {
+                    int cantidad = 0;
+                    if (row["FK_IDAREA"].ToString() != "4")
+                    {
+                        cantidad = Int32.Parse(row["CANTIDAD"].ToString());
+                    }
+                    else
+                    {
+                        cantidad = Int32.Parse(row["peso"].ToString());
+                    }
+                    p.Add(new Producto()
+                    {
+                        id = Int32.Parse(row["PK_IDPRODUCTO"].ToString()),
+                        idArea = Int32.Parse(row["FK_IDAREA"].ToString()),
+                        ean = Int64.Parse(row["EAN"].ToString()),
+                        descripcion = row["DESCRIPCION"].ToString(),
+                        precio = Int64.Parse(row["PRECIO"].ToString()),
+                        cantidad = cantidad
+                    });
+                }
                 return p;
             }
             catch (Exception e)
@@ -444,7 +493,7 @@ namespace Supermercado.DAO
                 foreach (DataRow row in ds.Tables[0].Rows)
                     logs.Add(new LogMovimiento()
                     {
-                        id = Int32.Parse(row["PK_IDBITACORAMOVIMIENTOS"].ToString()),
+                        id = Int64.Parse(row["PK_IDBITACORAMOVIMIENTOS"].ToString()),
                         nombreUsuario = row["NOMBREUSUARIO"].ToString(),
                         descripcion = row["DESCRIPCION"].ToString(),
                         tipoTransaccion = row["TIPOTRANSACCION"].ToString(),
@@ -485,11 +534,11 @@ namespace Supermercado.DAO
                 foreach (DataRow row in ds.Tables[0].Rows)
                     logs.Add(new LogCajero()
                     {
-                        id = Int32.Parse(row["PK_IDBITACORACAJERO"].ToString()),
+                        id = Int64.Parse(row["PK_IDBITACORACAJERO"].ToString()),
                         nombreUsuario = row["NOMBREUSUARIO"].ToString(),
                         fecha = row["FECHA"].ToString(),
                         idUsuario = Int32.Parse(row["IDUSUARIO"].ToString()),
-                        idFactura = Int32.Parse(row["IDFACTURA"].ToString()),
+                        idFactura = Int64.Parse(row["IDFACTURA"].ToString()),
                         numeroCaja = Int32.Parse(row["NUMEROCAJA"].ToString())
                     });
 
@@ -538,11 +587,11 @@ namespace Supermercado.DAO
                     }
                     logs.Add(new LogFactura()
                     {
-                        id = Int32.Parse(row["PK_IDBITACORAFACTURA"].ToString()),
+                        id = Int64.Parse(row["PK_IDBITACORAFACTURA"].ToString()),
                         nombreUsuario = row["NOMBREUSUARIO"].ToString(),
                         fecha = row["FECHA"].ToString(),
                         idUsuario = Int32.Parse(row["IDUSUARIO"].ToString()),
-                        idFactura = Int32.Parse(row["IDFACTURA"].ToString()),
+                        idFactura = Int64.Parse(row["IDFACTURA"].ToString()),
                         numeroCaja = Int32.Parse(row["IDUSUARIO"].ToString()),
                         total = Int64.Parse(row["TOTAL"].ToString()),
                         detelle = detalles
@@ -553,6 +602,121 @@ namespace Supermercado.DAO
             catch (Exception e)
             {
                 throw e;
+            }
+        }
+
+        public void agregarLogCajero(Factura factura)
+        {
+            try
+            {
+                OracleConnection connectionString = GetConnection();
+                OracleCommand cmd = new OracleCommand();
+                cmd.Connection = connectionString;
+                cmd.CommandText = "insertar_bitacoracajero_sp";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("p_pk_idbitacoracajero", OracleDbType.Int32).Value = factura.idFactura;
+                cmd.Parameters.Add("p_idusuario", OracleDbType.Int32).Value = factura.idUsuario;
+                cmd.Parameters.Add("p_nombreusuario", OracleDbType.Varchar2).Value = factura.nombreUsuario;
+                cmd.Parameters.Add("p_numerocaja", OracleDbType.Int32).Value = factura.numeroCaja;
+                cmd.Parameters.Add("p_idfactura", OracleDbType.Int32).Value = factura.idFactura;
+                cmd.Parameters.Add("p_fecha", OracleDbType.Date).Value = DateTime.Now;
+                connectionString.Open();
+                cmd.ExecuteNonQuery();
+                connectionString.Close();
+                cmd.Dispose();
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
+        public void actualizarCantidad(int cantidad, int idProducto, int idArea)
+        {
+            try
+            {
+                string sproc = "actualizar_cantidad_producto_sp";
+
+                if (idArea == 4)
+                    sproc = "actualizar_cantidad_productofresco_sp";
+                OracleConnection connectionString = GetConnection();
+                OracleCommand cmd = new OracleCommand();
+                cmd.Connection = connectionString;
+                cmd.CommandText = sproc;
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("p_id", OracleDbType.Int32).Value = idProducto;
+                cmd.Parameters.Add("p_cantidad", OracleDbType.Int32).Value = cantidad;
+                connectionString.Open();
+                cmd.ExecuteNonQuery();
+                connectionString.Close();
+                cmd.Dispose();
+            }
+            catch (Exception ex)
+            {
+                
+            }
+            
+        }
+
+        public void agregarLogFactura(Factura factura)
+        {
+            try
+            {
+                int autoIdentity = 0;
+                foreach (var detalle in factura.detalle)
+                {
+                    OracleConnection connectionString = GetConnection();
+                    OracleCommand cmd = new OracleCommand();
+                    cmd.Connection = connectionString;
+                    cmd.CommandText = "insertar_bitacorafactura_sp";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add("p_pk_idbitacorafactura", OracleDbType.Int64).Value = factura.idFactura + autoIdentity;
+                    cmd.Parameters.Add("p_idfactura", OracleDbType.Int64).Value = factura.idFactura;
+                    cmd.Parameters.Add("p_ean", OracleDbType.Int64).Value = detalle.ean;
+                    cmd.Parameters.Add("p_cantidad", OracleDbType.Int32).Value = detalle.cantidad;
+                    cmd.Parameters.Add("p_subtotal", OracleDbType.Int32).Value = detalle.subtotal;
+                    cmd.Parameters.Add("p_total", OracleDbType.Int32).Value = factura.total;
+                    cmd.Parameters.Add("p_idusuario", OracleDbType.Int32).Value = factura.idUsuario;
+                    cmd.Parameters.Add("p_nombreusuario", OracleDbType.Varchar2).Value = factura.nombreUsuario;
+                    cmd.Parameters.Add("p_fecha", OracleDbType.Date).Value = DateTime.Now;
+                    connectionString.Open();
+                    cmd.ExecuteNonQuery();
+                    connectionString.Close();
+                    cmd.Dispose();
+
+                    autoIdentity++;
+                    actualizarCantidad(detalle.cantidad, detalle.id, detalle.idArea);
+                }
+                
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
+        public void agregarLogMovimiento(int idUsuario, string nombreUsuario, string tabla, string tipoTransaccion, string descripcion)
+        {
+            try
+            {
+                string idMovimiento = DateTime.Now.Ticks.ToString();
+                OracleConnection connectionString = GetConnection();
+                OracleCommand cmd = new OracleCommand();
+                cmd.Connection = connectionString;
+                cmd.CommandText = "insertar_bitacoramovimientos_sp";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("p_pk_idbitacoramovimientos", OracleDbType.Int64).Value = Int64.Parse(idMovimiento.Substring(idMovimiento.Length - 10));
+                cmd.Parameters.Add("p_idusuario", OracleDbType.Int32).Value = idUsuario;
+                cmd.Parameters.Add("p_nombreusuario", OracleDbType.Varchar2).Value = nombreUsuario;
+                cmd.Parameters.Add("p_tabla", OracleDbType.Varchar2).Value = tabla;
+                cmd.Parameters.Add("p_tipotransaccion", OracleDbType.Varchar2).Value = tipoTransaccion;
+                cmd.Parameters.Add("p_descripcion", OracleDbType.Varchar2).Value = descripcion;
+                cmd.Parameters.Add("p_fecha", OracleDbType.Date).Value = DateTime.Now;
+                connectionString.Open();
+                cmd.ExecuteNonQuery();
+                connectionString.Close();
+                cmd.Dispose();
+            }
+            catch (Exception ex)
+            {
             }
         }
 

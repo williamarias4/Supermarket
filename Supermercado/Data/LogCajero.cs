@@ -8,6 +8,6 @@ namespace Supermercado.Data
     public class LogCajero : Log
     {
         public int numeroCaja { get; set; }
-        public int idFactura { get; set; }
+        public long idFactura { get; set; }
     }
 }

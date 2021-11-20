@@ -5,18 +5,16 @@ using System.Threading.Tasks;
 
 namespace Supermercado.Data
 {
-    public class LogFactura : Log
+    public class Factura
     {
         public long idFactura { get; set; }
         public int numeroCaja { get; set; }
         public float total { get; set; }
-        public List<DetalleFacturaLog> detelle { get; set; }
-    }
+        public int idUsuario { get; set; }
+        public string nombreUsuario { get; set; }
+        public string fecha { get; set; }
+        public List<DetalleFactura> detalle { get; set; }
 
-    public class DetalleFacturaLog
-    { 
-        public long EAN { get; set; }
-        public int cantidad { get; set; }
-        public long subTotal { get; set; }
+
     }
 }

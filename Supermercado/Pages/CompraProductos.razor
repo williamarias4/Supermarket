@@ -1,71 +1,80 @@
 ﻿@page "/CompraProductos"
+@inject IJSRuntime JsRuntime
 
 @using Supermercado.DAO;
 @using Supermercado.Data;
+@using System.Data; 
 
 @inject NavigationManager NavigationManager
+
+
 
 <div class="container">
     <h3>Productos</h3>
     <div class="row">
         <div class="col-12">
-            <table class="table table-bordered">
+            <table class="table table-bordered scroll">
                 <thead>
                     <tr>
+                        <th scope="col">EAN</th>
                         <th scope="col">Descripcion</th>
                         <th scope="col">Precio</th>
-                        <th scope="col">Cantidad</th>
+                        <th scope="col">Disponible</th>
                         <th></th>
 
                     </tr>
                 </thead>
                 <tbody>
-                   
-                    @foreach (var producto in init())
+
+                    @foreach (var producto in productos)
+                    {
+
+                    <tr>
+
+                        <td>@producto.ean</td>
+                        <td>@producto.descripcion </td>
+                        <td>@producto.precio </td>
+                        @if (producto.idArea != 4)
                         {
-                        
-                        <tr>
+                            <td>@producto.cantidad</td>
+                        }
+                        else
+                        {
+                            <td>@producto.cantidad Kg</td>
+                        }
 
-                            <td>@producto.descripcion </td>
-                            <td>@producto.precio </td>
-                            <td>
-                                <select class="form-control" @bind="@cantidad">
-
-                                    <option value=""></option>
-                                    @foreach (var c in cantidades)
-                                    {
-                                        
-                                        <option value="@c"> @c </option>
-                                    }
-                                    
-
-                                </select>
-                            </td> 
-                            <td>
-                                <button type="button" class="btn btn-primary" @onclick="() => mostrarFactura(producto.descripcion, producto.precio, cantidad)">Añadir</button>
-                            </td>
-                        </tr>
+                        <td>
+                            <input type="text" @bind="@producto.cantidadVendida" />
+                            <button type="button" class="btn btn-primary" @onclick="() => mostrarFactura(producto)">Añadir</button>
+                        </td>
+                    </tr>
                     }
                 </tbody>
             </table>
         </div>
     </div>
- </div>
+</div>
 <div>
 
     <h4>Carrito de compras</h4>
     <table>
-        @foreach (var element in l)
+        @foreach (var detalle in factura.detalle)
         {
             <tr>
-                <td>@element</td>
-
+                <td>
+                    <button type="button" class="btn btn-danger" @onclick="() => quitarProducto(detalle)">X</button>
+                    Producto: @detalle.descripcion
+                    <br />Precio: @detalle.precio
+                    <br />Cantidad: @detalle.cantidad
+                    <br />SubTotal: @detalle.subtotal
+                    <br />-----------------------------------------
+                </td>
             </tr>
         }
-
+        Total a facturar: @factura.total
         <tr>
             <td>
-                <button type="button" class="btn btn-success" @*@onclick="() => facturar()" *@>Facturar</button>
+                <button type="button" class="btn btn-success" @onclick="() => facturar()">Facturar</button>
             </td>
         </tr>
 
@@ -73,6 +82,12 @@
 </div>
 
 @code {
+
+    Factura factura = new Factura();
+
+    List<Producto> productos = new List<Producto>();
+    List<Producto> productosCompleta = new List<Producto>();
+    string CantidadProducto = "";
 
     //lista de prodcutos para la visualizacion del carrito
     List<string> l = new List<string>();
@@ -92,29 +107,60 @@
         }
     }
 
-
-
-    private List<Producto> init()
+    private void mostrarFactura(Producto producto)
     {
-        List<Producto> lista = new List<Producto>();
-
-        Producto p = new Producto(1, 1, 1, "Frijoles", 1300, 0);
-        Producto p2 = new Producto(2, 2, 2, "Arroz", 1200, 0);
-        Producto p3 = new Producto(3, 3, 3, "Leche", 800, 0);
-
-        lista.Add(p);
-        lista.Add(p2);
-        lista.Add(p3);
-
-        return lista;
+        factura.detalle.Add(new DetalleFactura()
+        {
+            descripcion = producto.descripcion,
+            ean = producto.ean,
+            idArea = producto.idArea,
+            subtotal = producto.precio * Int32.Parse(producto.cantidadVendida),
+            cantidad = Int32.Parse(producto.cantidadVendida),
+            precio = producto.precio,
+            id = producto.id
+        });
+        factura.total += producto.precio * Int32.Parse(producto.cantidadVendida);
+        producto.cantidadVendida = "";
     }
 
-    private void mostrarFactura(string d, float p, int c)
+    protected override void OnInitialized()
     {
-        l.Add("Descripcion: " + d);
-        l.Add("Precio: " +  p);
-        l.Add("Cantidad: " + c);
-        l.Add("+-----------------------------------------+");
+        iniciarFactura();
     }
-    
+
+    private void facturar()
+    {
+        if (factura.detalle is not null && factura.detalle.Count > 0)
+        {
+            CRUD crud = new CRUD();
+            crud.agregarLogCajero(factura);
+            crud.agregarLogFactura(factura);
+
+
+            //reiniciar los valores con lo mas actual
+            iniciarFactura();
+        }
+    }
+
+    private void iniciarFactura()
+    {
+        factura = new Factura();
+        factura.detalle = new List<DetalleFactura>();
+        string numeroFactura = DateTime.Now.Ticks.ToString();
+        factura.idFactura = Int64.Parse(numeroFactura.Substring(numeroFactura.Length - 10));
+        factura.numeroCaja = 1;
+        factura.nombreUsuario = "Armando Carvajal";
+        factura.fecha = DateTime.Now.ToString();
+        CRUD crud = new CRUD();
+        productos = crud.listarProductosDisponibles();
+        productosCompleta = crud.listarProductosDisponibles();
+    }
+
+    private void quitarProducto(DetalleFactura detalle)
+    {
+        factura.detalle.Remove(detalle);
+        factura.total -= detalle.subtotal;
+    }
+
 }
+
