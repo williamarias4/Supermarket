@@ -23,6 +23,7 @@
             <div class="form-group">
                 <button @onclick="iniciarSesion" class="btn btn-primary">Iniciar Sesion</button>
             </div>
+            <p class="text-danger">@Message</p>
         </section>
     </div>
 </div>
@@ -49,11 +50,16 @@
 
             if (user.IdUsuario != 0)
             {
+                Message = "";
                 SaveSession();
                 NavigationManager.NavigateTo("/", forceLoad: true);
             }
         }
-        else { return; }
+        else
+        {
+            Message = "Se intentado conectar con un usuario que no existe en la BD. Favor validar credenciales antes de volverlo a intentar";
+            return;
+        }
 
     }
 
