@@ -28,7 +28,6 @@ namespace Supermercado
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton<WeatherForecastService>();
             services.AddBlazoredLocalStorage();
         }
 

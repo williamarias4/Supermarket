@@ -40,6 +40,7 @@
         Area a = new Area();
         CRUD crud = new CRUD();
         a = crud.areaPorId(id);
+        crud.agregarLogMovimiento(userSessionValue.IdUsuario, userSessionValue.NombreUsuario, "AREA", "SELECT", "SELECCIONAR AREAS POR ID");
         descripcion = a.descripcion;
     }
 
@@ -48,6 +49,7 @@
         Area a = new Area(id, descripcion);
         CRUD crud = new CRUD();
         crud.actualizarArea(a);
+        crud.agregarLogMovimiento(userSessionValue.IdUsuario, userSessionValue.NombreUsuario, "AREA", "UPDATE", "ACTUALIZAR AREAS POR ID");
     }
 
 
