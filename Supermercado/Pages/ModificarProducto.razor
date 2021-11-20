@@ -1,4 +1,6 @@
 ﻿@page "/modificarProducto/{id:int}"
+@inject Blazored.LocalStorage.ILocalStorageService iLocalStorage
+
 
 @using Supermercado.DAO;
 @using Supermercado.Data;
@@ -31,7 +33,7 @@
         </div>
         <div class="form-group col-md-6">
             <label for="inputCantidad">Cantidad</label>
-            <input @bind-value="cantidad" type="number" class="form-control" id="inputCantidad"  min="1" step="1"  required>
+            <input @bind-value="cantidad" type="number" class="form-control" id="inputCantidad" min="1" step="1" required>
         </div>
     </div>
     @if (plu != 0 && peso != 0)
@@ -61,12 +63,20 @@
     [Parameter]
     public int id { get; set; }
     public int idArea;
-    private long ean ;
+    private long ean;
     private string descripcion;
     private float precio;
     private int cantidad;
     private int plu = 0;
     private float peso = 0;
+    Usuario userSessionValue = new Usuario();
+
+    protected override async Task OnInitializedAsync()
+    {
+        userSessionValue = await iLocalStorage.GetItemAsync<Usuario>("SessionValue");
+        cargarDatos();
+
+    }
 
     public void cargarDatos()
     {
@@ -80,7 +90,7 @@
         descripcion = p.descripcion;
         precio = p.precio;
         cantidad = p.cantidad;
-        if (f!=null)
+        if (f != null)
         {
             plu = f.PLU;
             peso = f.Peso;
@@ -108,8 +118,4 @@
         return crud.listarAreas();
     }
 
-    protected override async Task OnInitializedAsync()
-    {
-        cargarDatos();
-    }
 }

@@ -1,4 +1,7 @@
 ﻿@page "/modificarArea/{id:int}"
+@inject Blazored.LocalStorage.ILocalStorageService iLocalStorage
+@inject NavigationManager NavigationManager
+
 
 @using Supermercado.DAO;
 @using Supermercado.Data;
@@ -20,6 +23,14 @@
 </form>
 
 @code {
+    Usuario userSessionValue = new Usuario();
+
+    protected override async Task OnInitializedAsync()
+    {
+        userSessionValue = await iLocalStorage.GetItemAsync<Usuario>("SessionValue");
+        cargarDatos();
+    }
+
     [Parameter]
     public int id { get; set; }
     private string descripcion;
@@ -39,8 +50,5 @@
         crud.actualizarArea(a);
     }
 
-    protected override async Task OnInitializedAsync()
-    {
-        cargarDatos();
-    }
+
 }

@@ -1,4 +1,7 @@
 ﻿@page "/formularioArea"
+@inject Blazored.LocalStorage.ILocalStorageService iLocalStorage
+@inject NavigationManager NavigationManager
+
 
 @using Supermercado.DAO;
 @using Supermercado.Data;
@@ -21,6 +24,13 @@
 
 @code {
     private string descripcion;
+    Usuario userSessionValue = new Usuario();
+
+    protected override async Task OnInitializedAsync()
+    {
+        userSessionValue = await iLocalStorage.GetItemAsync<Usuario>("SessionValue");
+
+    }
 
     private void insertarArea()
     {

@@ -1,4 +1,7 @@
 ﻿@page "/formularioProducto"
+@inject Blazored.LocalStorage.ILocalStorageService iLocalStorage
+@inject NavigationManager NavigationManager
+
 
 @using Supermercado.DAO;
 @using Supermercado.Data;
@@ -52,7 +55,7 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="inputPLU">PLU</label>
-                <input @bind="PLU" type="number" class="form-control" id="inputPLU" step="1" min="1"  required>
+                <input @bind="PLU" type="number" class="form-control" id="inputPLU" step="1" min="1" required>
             </div>
             <div class="form-group col-md-6">
                 <label for="inputPeso">Peso en gramos</label>
@@ -79,13 +82,20 @@
     private int PLU = 0;
     private int peso = 0;
     private int idArea = 1;
+    Usuario userSessionValue = new Usuario();
+
+    protected override async Task OnInitializedAsync()
+    {
+        userSessionValue = await iLocalStorage.GetItemAsync<Usuario>("SessionValue");
+
+    }
 
     private void insertarProducto()
     {
 
         Producto p = new Producto(0, idArea, ean, descripcion, precio, cantidad);
         CRUD crud = new CRUD();
-        if (esFresco && PLU!=0 && peso!=0)
+        if (esFresco && PLU != 0 && peso != 0)
         {
             crud.insertarProducto(p);
             Queue<Producto> colaProductos = new Queue<Producto>();
