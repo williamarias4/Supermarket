@@ -120,62 +120,82 @@ namespace Supermercado.DAO
         public Rol buscarRol(int idRol)
         {
             Rol rol = new Rol();
-            OracleConnection connectionString = GetConnection();
-            string sql = "select pk_idrol, descripcion from SUPER.rol where pk_idrol =:id";
-            OracleConnection connection = connectionString;
-            connection.Open();
-            OracleCommand cmd = connection.CreateCommand();
-            cmd.CommandText = sql;
-            cmd.Parameters.Add("id", OracleDbType.Int32).Value = idRol;
-            cmd.ExecuteNonQuery();
-            OracleDataReader dr = cmd.ExecuteReader();
-            if (dr.HasRows)
+            try
             {
-                while (dr.Read())
+                OracleConnection connection = GetConnection();
+                connection.Open();
+                if (connection.State == System.Data.ConnectionState.Open)
                 {
-                    rol.IdRol = dr.GetInt32(0);
-                    rol.Descripcion = dr.GetString(1);
+                    OracleCommand cmd = new OracleCommand();
+                    cmd.Connection = connection;
+                    cmd.CommandText = "seleccionar_rolporid_sp";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add("result", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add("id", OracleDbType.Int32).Value = idRol;
+                    cmd.ExecuteNonQuery();
+                    OracleDataReader dr = cmd.ExecuteReader();
+                    if (dr.HasRows)
+                    {
+                        while (dr.Read())
+                        {
+                            rol.IdRol = dr.GetInt32(0);
+                            rol.Descripcion = dr.GetString(1);
+                        }
+                    }
+                    connection.Close();
+                    cmd.Dispose();
+                    connection.Dispose();
                 }
+                return rol;
             }
-            connection.Close();
-            cmd.Dispose();
-            connection.Dispose();
-            return rol;
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
 
         public Usuario validateCredentials(string username, string password)
         {
             Usuario user = new Usuario();
-            OracleConnection connectionString = GetConnection();
-            string sql = "select pk_idusuario,fk_idrol,nombreusuario,contrasena,nombre,apellido1,apellido2 from SUPER.usuario where nombreusuario =:usern and contrasena =: pass";
-            //string sql = "select verificar_usuario_sp('"+username+"','"+ password+"')"+" from dual";
-            OracleConnection connection = connectionString;
-            connection.Open();
-            OracleCommand cmd = connection.CreateCommand();
-            cmd.CommandText = sql;
-            cmd.Parameters.Add("nombreusuario", OracleDbType.Varchar2).Value = username;
-            cmd.Parameters.Add("contrasena", OracleDbType.Varchar2).Value = user.CreateMD5(password);
-            cmd.ExecuteNonQuery();
-            OracleDataReader dr = cmd.ExecuteReader();
-            if (dr.HasRows)
+            try
             {
-                while (dr.Read())
+                OracleConnection connection = GetConnection();
+                connection.Open();
+                if (connection.State == System.Data.ConnectionState.Open)
                 {
-
-                    user.IdUsuario = dr.GetInt32(0);
-                    Rol rol = buscarRol(dr.GetInt32(1));
-                    user.Rol = rol;
-                    user.NombreUsuario= username;
-                    user.Contrasena= password;
-                    user.Nombre = dr.GetString(4);
-                    user.Apellido1 = dr.GetString(5);
-                    user.Apellido2 = dr.GetString(6);
+                    OracleCommand cmd = new OracleCommand();
+                    cmd.Connection = connection;
+                    cmd.CommandText = "seleccionar_usuarioporcredenciales_sp";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add("result", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add("p_nombreusuario", OracleDbType.Varchar2).Value = username;
+                    cmd.Parameters.Add("p_contrasena", OracleDbType.Varchar2).Value = user.CreateMD5(password);
+                    cmd.ExecuteNonQuery();
+                    OracleDataReader dr = cmd.ExecuteReader();
+                    if (dr.HasRows)
+                    {
+                        while (dr.Read())
+                        {
+                            user.IdUsuario = dr.GetInt32(0);
+                            Rol rol = buscarRol(dr.GetInt32(1));
+                            user.Rol = rol;
+                            user.NombreUsuario = username;
+                            user.Contrasena = password;
+                            user.Nombre = dr.GetString(4);
+                            user.Apellido1 = dr.GetString(5);
+                            user.Apellido2 = dr.GetString(6);
+                        }
+                    }
+                    connection.Close();
+                    cmd.Dispose();
+                    connection.Dispose();
                 }
+                return user;
             }
-            connection.Close();
-            cmd.Dispose();
-            connection.Dispose();
-            return user;
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
 
         public List<Producto> listarProductos()
