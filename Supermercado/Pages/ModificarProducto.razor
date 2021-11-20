@@ -10,7 +10,7 @@
     <div class="form-row">
         <div class="form-group col-md-6">
             <label for="inputArea">Area</label>
-            <select id="inputArea" class="form-control" @bind="idArea" required>
+            <select disabled id="inputArea" class="form-control" @bind="idArea" required>
                 @foreach (var area in listarAreas())
                 {
                     <option value="@area.idArea">@area.descripcion</option>
@@ -19,7 +19,7 @@
         </div>
         <div class="form-group col-md-6">
             <label for="inputEAN">EAN</label>
-            <input @bind-value="ean" type="number" class="form-control" id="inputEAN" min="1" step="1" required>
+            <input disabled @bind-value="ean" type="number" class="form-control" id="inputEAN" min="1" step="1" required>
         </div>
     </div>
     <div class="form-row">
@@ -29,7 +29,7 @@
     <div class="form-row">
         <div class="form-group col-md-6">
             <label for="inputPrecio">Precio en colones</label>
-            <input @bind-value="precio" type="number" class="form-control" id="inputPrecio" step="1" min="1" required>
+            <input disabled @bind-value="precio" type="number" class="form-control" id="inputPrecio" step="1" min="1" required>
         </div>
         <div class="form-group col-md-6">
             <label for="inputCantidad">Cantidad</label>
@@ -41,11 +41,11 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="inputPlu">PLU</label>
-                <input @bind-value="plu" type="number" class="form-control" id="inputPlu" placeholder="1000" step="1" min="1" required>
+                <input disabled @bind-value="plu" type="number" class="form-control" id="inputPlu" placeholder="1000" step="1" min="1" required>
             </div>
             <div class="form-group col-md-6">
                 <label for="inputPeso">Peso</label>
-                <input @bind-value="peso" type="number" class="form-control" id="inputPeso" placeholder="50" step="1" min="1" required>
+                <input disabled @bind-value="peso" type="number" class="form-control" id="inputPeso" placeholder="50" step="1" min="1" required>
             </div>
         </div>
     }
@@ -75,7 +75,6 @@
     {
         userSessionValue = await iLocalStorage.GetItemAsync<Usuario>("SessionValue");
         cargarDatos();
-
     }
 
     public void cargarDatos()

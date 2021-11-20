@@ -48,17 +48,38 @@
                             {
                                 <td>@producto.Peso</td>
                             }
-                            <td>
-                                <button type="button" class="btn btn-success" @onclick="() => enviarId(producto.id)">Modificar</button>
-                                @if (producto.Peso != 0 && producto.PLU != 0)
+                        <td>
+                            @if((userSessionValue.Area != null && producto.idArea.ToString() == userSessionValue.Area) || (userSessionValue.Area != null && userSessionValue.Rol.IdRol == 3) ||
+                                (userSessionValue.Area != null && userSessionValue.Rol.IdRol == 4)) { 
+                            
+                            <button type="button" class="btn btn-success" @onclick="() => enviarId(producto.id)">Modificar</button>
+                            }
+                            @if (producto.Peso != 0 && producto.PLU != 0)
+                            {
+                                if (userSessionValue.Rol == null)
+                                {
+
+                                }
+                                else if (userSessionValue.Rol.IdRol == 3 || userSessionValue.Rol.IdRol == 4)
                                 {
                                     <button type="button" class="btn btn-danger" @onclick="() => eliminarProductoFresco(producto.id)">Eliminar</button>
                                 }
-                                else
+                                else { }
+                            }
+                            else
+                            {
+                                if (userSessionValue.Rol == null)
                                 {
-                                    <button type="button" class="btn btn-danger" @onclick="() => eliminarProducto(producto.id)">Eliminar</button>
+
                                 }
-                            </td>
+                                else if (userSessionValue.Rol.IdRol == 3 || userSessionValue.Rol.IdRol == 4)
+                                {
+                                <button type="button" class="btn btn-danger" @onclick="() => eliminarProducto(producto.id)">Eliminar</button>
+                                }
+                                else { }
+                                
+                            }
+                        </td>
                         </tr>
                     }
                 </tbody>
