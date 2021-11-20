@@ -82,6 +82,7 @@
 
     private void insertarProducto()
     {
+
         Producto p = new Producto(0, idArea, ean, descripcion, precio, cantidad);
         CRUD crud = new CRUD();
         if (esFresco && PLU!=0 && peso!=0)
@@ -97,6 +98,10 @@
         if (!esFresco)
         {
             crud.insertarProducto(p);
+        }
+        else
+        {
+            return;
         }
     }
 

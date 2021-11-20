@@ -101,7 +101,7 @@ namespace Supermercado.DAO
                     {
                         id = Int32.Parse(row["PK_IDPRODUCTO"].ToString()),
                         idArea = Int32.Parse(row["FK_IDAREA"].ToString()),
-                        ean = Int32.Parse(row["EAN"].ToString()),
+                        ean = Int64.Parse(row["EAN"].ToString()),
                         descripcion = row["DESCRIPCION"].ToString(),
                         precio = Int64.Parse(row["PRECIO"].ToString()),
                         cantidad = Int32.Parse(row["CANTIDAD"].ToString()),
@@ -258,15 +258,8 @@ namespace Supermercado.DAO
                 }
                 foreach (DataRow row in ds.Tables[0].Rows)
                 {
-                    int cantidad = 0;
-                    if (row["FK_IDAREA"].ToString() != "4")
-                    {
-                        cantidad = Int32.Parse(row["CANTIDAD"].ToString());
-                    }
-                    else
-                    {
-                        cantidad = Int32.Parse(row["peso"].ToString());
-                    }
+                    int cantidad = Int32.Parse(row["CANTIDAD"].ToString());
+
                     p.Add(new Producto()
                     {
                         id = Int32.Parse(row["PK_IDPRODUCTO"].ToString()),
