@@ -3,9 +3,10 @@
 
 @using Supermercado.DAO;
 @using Supermercado.Data;
-@using System.Data; 
+@using System.Data;
 
 @inject NavigationManager NavigationManager
+@inject Blazored.LocalStorage.ILocalStorageService iLocalStorage
 
 
 
@@ -29,25 +30,25 @@
                     @foreach (var producto in productos)
                     {
 
-                    <tr>
+                        <tr>
 
-                        <td>@producto.ean</td>
-                        <td>@producto.descripcion </td>
-                        <td>@producto.precio </td>
-                        @if (producto.idArea != 4)
-                        {
-                            <td>@producto.cantidad</td>
-                        }
-                        else
-                        {
-                            <td>@producto.cantidad Kg</td>
-                        }
+                            <td>@producto.ean</td>
+                            <td>@producto.descripcion </td>
+                            <td>@producto.precio </td>
+                            @if (producto.idArea != 4)
+                            {
+                                <td>@producto.cantidad</td>
+                            }
+                            else
+                            {
+                                <td>@producto.cantidad Kg</td>
+                            }
 
-                        <td>
-                            <input type="text" @bind="@producto.cantidadVendida" />
-                            <button type="button" class="btn btn-primary" @onclick="() => mostrarFactura(producto)">Añadir</button>
-                        </td>
-                    </tr>
+                            <td>
+                                <input type="text" @bind="@producto.cantidadVendida" />
+                                <button type="button" class="btn btn-primary" @onclick="() => mostrarFactura(producto)">Añadir</button>
+                            </td>
+                        </tr>
                     }
                 </tbody>
             </table>
@@ -71,7 +72,10 @@
                 </td>
             </tr>
         }
+        Numero de Caja: @factura.numeroCaja
+        Cajero: @factura.nombreUsuario
         Total a facturar: @factura.total
+
         <tr>
             <td>
                 <button type="button" class="btn btn-success" @onclick="() => facturar()">Facturar</button>
@@ -88,6 +92,7 @@
     List<Producto> productos = new List<Producto>();
     List<Producto> productosCompleta = new List<Producto>();
     string CantidadProducto = "";
+    Usuario userSessionValue = new Usuario();
 
     //lista de prodcutos para la visualizacion del carrito
     List<string> l = new List<string>();
@@ -123,8 +128,9 @@
         producto.cantidadVendida = "";
     }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
+        userSessionValue = await iLocalStorage.GetItemAsync<Usuario>("SessionValue");
         iniciarFactura();
     }
 
@@ -148,8 +154,8 @@
         factura.detalle = new List<DetalleFactura>();
         string numeroFactura = DateTime.Now.Ticks.ToString();
         factura.idFactura = Int64.Parse(numeroFactura.Substring(numeroFactura.Length - 10));
-        factura.numeroCaja = 1;
-        factura.nombreUsuario = "Armando Carvajal";
+        factura.numeroCaja = Int32.Parse(userSessionValue.Caja);
+        factura.nombreUsuario = userSessionValue.Nombre + " " + userSessionValue.Apellido1 + " " + userSessionValue.Apellido2;
         factura.fecha = DateTime.Now.ToString();
         CRUD crud = new CRUD();
         productos = crud.listarProductosDisponibles();
