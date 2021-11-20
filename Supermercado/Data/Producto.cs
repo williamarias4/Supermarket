@@ -23,5 +23,6 @@ namespace Supermercado.Data
         public string descripcion { get; set; }
         public float precio { get; set; }
         public int cantidad { get; set; }
+        public string cantidadVendida { get; set; }
     }
 }
