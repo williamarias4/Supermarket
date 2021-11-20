@@ -147,34 +147,43 @@ namespace Supermercado.DAO
         {
             Usuario user = new Usuario();
             OracleConnection connectionString = GetConnection();
-            string sql = "select pk_idusuario,fk_idrol,nombreusuario,contrasena,nombre,apellido1,apellido2 from SUPER.usuario where nombreusuario =:usern and contrasena =: pass";
-            //string sql = "select verificar_usuario_sp('"+username+"','"+ password+"')"+" from dual";
-            OracleConnection connection = connectionString;
-            connection.Open();
-            OracleCommand cmd = connection.CreateCommand();
-            cmd.CommandText = sql;
-            cmd.Parameters.Add("nombreusuario", OracleDbType.Varchar2).Value = username;
-            cmd.Parameters.Add("contrasena", OracleDbType.Varchar2).Value = user.CreateMD5(password);
-            cmd.ExecuteNonQuery();
-            OracleDataReader dr = cmd.ExecuteReader();
-            if (dr.HasRows)
+            try
             {
-                while (dr.Read())
+                DataSet ds = new DataSet();
+                OracleConnection connection = GetConnection();
+                connection.Open();
+                OracleCommand cmd = new OracleCommand();
+                cmd.Connection = connection;
+                cmd.CommandText = "login_sp";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("p_nombreUsuario", OracleDbType.Varchar2).Value = username;
+                cmd.Parameters.Add("p_contrasena", OracleDbType.Varchar2).Value = user.CreateMD5(password);
+                cmd.Parameters.Add("result", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+                cmd.ExecuteNonQuery();
+                connection.Close();
+                OracleDataAdapter da = new OracleDataAdapter(cmd);
+                da.Fill(ds);
+                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
                 {
-
-                    user.IdUsuario = dr.GetInt32(0);
-                    Rol rol = buscarRol(dr.GetInt32(1));
+                    user.IdUsuario = Int32.Parse(ds.Tables[0].Rows[0]["PK_IDUSUARIO"].ToString());
+                    Rol rol = buscarRol(Int32.Parse(ds.Tables[0].Rows[0]["PK_IDROL"].ToString()));
                     user.Rol = rol;
-                    user.NombreUsuario= username;
-                    user.Contrasena= password;
-                    user.Nombre = dr.GetString(4);
-                    user.Apellido1 = dr.GetString(5);
-                    user.Apellido2 = dr.GetString(6);
+                    user.Nombre = ds.Tables[0].Rows[0]["NOMBRE"].ToString();
+                    user.Apellido1 = ds.Tables[0].Rows[0]["APELLIDO1"].ToString();
+                    user.Apellido2 = ds.Tables[0].Rows[0]["APELLIDO2"].ToString();
+                    user.NombreUsuario = ds.Tables[0].Rows[0]["NOMBREUSUARIO"].ToString();
+                    user.Contrasena = password;
+                    user.Caja = ds.Tables[0].Rows[0]["NUMEROCAJA"].ToString();
+                    user.Area = ds.Tables[0].Rows[0]["AREA"].ToString();
+
                 }
             }
-            connection.Close();
-            cmd.Dispose();
-            connection.Dispose();
+            catch (Exception ex)
+            {
+
+                
+            }
+            
             return user;
         }
 
